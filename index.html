@@ -500,18 +500,21 @@ That stored ID is called a foreign key. A foreign key is a column in one table t
     </div>
 
     <div class="step-head">STEP 6: ADDING ROWS WITH INSERT INTO</div>
-<p>Your table exists, but it's empty. <code class="inline">INSERT INTO</code> is used to add a new row of data.</p>
+```html
+<p>First, write <code class="inline">INSERT INTO</code>. This tells SQL you want to add a new row.</p>
 
-<p>Right after <code class="inline">INSERT INTO</code>, you write the name of the table you want to add data to. After the table name, you put the column names inside parentheses. These are the names you gave your columns when you created the table (such as <code class="inline">name</code>, <code class="inline">phone_number</code>, or <code class="inline">location</code>). Think of it as telling SQL, "Hey! These are the columns I'm about to fill."</p>
+<p>Next, write the name of the table you want to add data to. In our case, the table is called <code class="inline">monsters</code>.</p>
 
-<p>For example:</p>
+<p>After the table name, put the column names inside parentheses. These are the names you gave your columns when you created the table (<code class="inline">name</code>, <code class="inline">phone_number</code>, and <code class="inline">location</code>). Think of it as telling SQL, "These are the columns I want to fill."</p>
+
+<p>So it should look like this:</p>
 
 <p><code class="inline">INSERT INTO monsters(name, phone_number, location)</code></p>
 
-<p>Next comes <code class="inline">VALUES</code>. Inside its parentheses, you write the actual data you want to add. The values must be in the <strong>same order</strong> as the columns you listed above. If the order doesn't match, the wrong data could end up in the wrong columns.</p>
+<p>Next comes <code class="inline">VALUES</code>. Inside its parentheses, write the data you want to add in the <strong>same order</strong> as the columns above.</p>
 
-<p>You should also make sure each value matches the column's data type. For example, if <code class="inline">id</code> is an <code class="inline">INT</code>, enter a number. If a column is <code class="inline">VARCHAR</code>, enter text. Always use the type of data the table expects, or SQL may give you an error.</p>
-
+<p><code class="inline">VALUES ('Mike', '555-1234', 'Dark Forest');</code></p>
+```
 
     <pre><span class="kw">INSERT INTO</span> monsters (name, phone_number, location)
 <span class="kw">VALUES</span> ('Sans', '555-0100', 'Snowdin');
