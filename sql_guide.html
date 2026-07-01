@@ -1,0 +1,1310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SQL: Stay Determined</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Space+Mono:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #0b0b0d;
+    --panel: #131316;
+    --panel-2: #19191d;
+    --white: #f6f3ea;
+    --soul: #ff2d3a;
+    --gold: #ffd23f;
+    --bone: #d8d0b8;
+    --water: #59c8ff;
+    --dim: #8b8a86;
+    --border: #f6f3ea;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(1200px 600px at 50% -200px, rgba(89,200,255,0.06), transparent 60%),
+      radial-gradient(1.6px 1.6px at 12% 18%, rgba(246,243,234,0.5), transparent 60%),
+      radial-gradient(1.2px 1.2px at 38% 62%, rgba(89,200,255,0.4), transparent 60%),
+      radial-gradient(1.4px 1.4px at 68% 12%, rgba(246,243,234,0.4), transparent 60%),
+      radial-gradient(1px 1px at 82% 70%, rgba(255,210,63,0.35), transparent 60%),
+      radial-gradient(1.3px 1.3px at 22% 88%, rgba(246,243,234,0.3), transparent 60%),
+      radial-gradient(1px 1px at 55% 35%, rgba(246,243,234,0.25), transparent 60%),
+      radial-gradient(1.2px 1.2px at 92% 40%, rgba(89,200,255,0.3), transparent 60%),
+      repeating-linear-gradient(0deg, transparent 0 39px, rgba(246,243,234,0.02) 39px 40px),
+      repeating-linear-gradient(90deg, transparent 0 79px, rgba(246,243,234,0.02) 79px 80px),
+      var(--bg);
+    background-repeat: no-repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat, repeat, no-repeat;
+    background-size: 100% 100%, 420px 420px, 420px 420px, 420px 420px, 420px 420px, 420px 420px, 420px 420px, 420px 420px, 80px 80px, 80px 80px, auto;
+    color:var(--white);
+    font-family:'Space Mono', monospace;
+    line-height:1.65;
+  }
+  .page{
+    max-width:880px;
+    margin:0 auto;
+    padding:64px 32px 40px;
+  }
+  .display{ font-family:'Press Start 2P', monospace; }
+  .narration{
+    font-style:italic;
+    color:var(--dim);
+    font-family:'VT323', monospace;
+    font-size:1.35rem;
+    letter-spacing:0.3px;
+  }
+  .narration::before{ content:"* "; color:var(--water); font-style:normal; }
+
+  /* COVER */
+  .cover{
+    text-align:center;
+    padding:90px 20px 70px;
+    border-bottom:2px solid rgba(246,243,234,0.15);
+    margin-bottom:10px;
+  }
+  .soul{
+    width:46px;height:46px;margin:0 auto 34px;
+    filter:drop-shadow(0 0 14px rgba(255,45,58,0.75));
+    animation:pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{ transform:scale(1); filter:drop-shadow(0 0 10px rgba(255,45,58,0.6)); }
+    50%{ transform:scale(1.12); filter:drop-shadow(0 0 20px rgba(255,45,58,0.95)); }
+  }
+  .cover h1{
+    font-size:2.6rem;
+    letter-spacing:2px;
+    margin:0 0 14px;
+    color:var(--gold);
+    text-shadow:0 0 24px rgba(255,210,63,0.35);
+  }
+  .cover .sub{
+    font-family:'VT323', monospace;
+    font-size:1.6rem;
+    color:var(--bone);
+    margin-bottom:36px;
+  }
+  .achievement{
+    display:inline-flex;
+    align-items:center;
+    gap:16px;
+    background:var(--panel);
+    border:2px solid var(--gold);
+    border-radius:6px;
+    padding:16px 22px;
+    text-align:left;
+    max-width:420px;
+  }
+  .achievement svg{flex-shrink:0;}
+  .achievement .a-title{ font-size:0.65rem; color:var(--gold); font-family:'Press Start 2P'; margin-bottom:8px;}
+  .achievement .a-name{ font-family:'VT323'; font-size:1.3rem; color:var(--white);}
+  .achievement .a-xp{ font-family:'VT323'; font-size:1rem; color:var(--dim); margin-top:4px;}
+  .save-note{
+    margin-top:40px;
+    font-family:'VT323';
+    font-size:1.25rem;
+    color:var(--water);
+  }
+
+  /* TOC */
+  .toc{ padding:40px 0 60px; }
+  .toc h2{ font-family:'Press Start 2P'; font-size:1rem; color:var(--gold); margin-bottom:6px;}
+  .toc .toc-sub{ font-family:'VT323'; color:var(--dim); font-size:1.2rem; margin-bottom:28px;}
+  .toc-list{ list-style:none; padding:0; margin:0; }
+  .toc-list li{
+    display:grid;
+    grid-template-columns:52px 1fr auto;
+    gap:14px;
+    align-items:baseline;
+    padding:11px 0;
+    border-bottom:1px dashed rgba(246,243,234,0.15);
+  }
+  .toc-list .num{ font-family:'Press Start 2P'; font-size:0.72rem; color:var(--soul);}
+  .toc-list .name{ color:var(--white); font-weight:bold; }
+  .toc-list .desc{ color:var(--dim); font-family:'VT323'; font-size:1.15rem; text-align:right;}
+
+  /* CHAPTERS */
+  .chapter{ padding:70px 0; border-top:2px solid rgba(246,243,234,0.12); }
+  .chapter:first-of-type{ border-top:none; }
+  .kicker{
+    font-family:'Press Start 2P'; font-size:0.65rem; color:var(--soul);
+    letter-spacing:1px; margin-bottom:14px;
+  }
+  .chapter h2{
+    font-family:'Press Start 2P';
+    font-size:1.5rem;
+    color:var(--white);
+    margin:0 0 22px;
+    line-height:1.5;
+  }
+  .chapter > p{ font-size:1.02rem; color:var(--bone); max-width:680px; }
+
+  .step-head{
+    display:inline-block;
+    background:var(--soul);
+    color:#1a0505;
+    font-family:'Press Start 2P';
+    font-size:0.7rem;
+    padding:10px 14px;
+    border-radius:4px;
+    margin:36px 0 16px;
+  }
+
+  pre{
+    background:#000;
+    border:2px solid rgba(246,243,234,0.25);
+    border-radius:6px;
+    padding:20px 22px;
+    overflow-x:auto;
+    font-family:'Space Mono', monospace;
+    font-size:0.92rem;
+    color:#c9f7c9;
+    margin:0 0 20px;
+  }
+  pre .cm{ color:var(--dim); }
+  pre .kw{ color:var(--water); }
+  pre .gold{ color:var(--gold); }
+  code.inline{
+    background:#000; border:1px solid rgba(246,243,234,0.25);
+    padding:2px 6px; border-radius:3px; font-size:0.9rem; color:var(--gold);
+  }
+
+  .box{
+    border-radius:6px;
+    padding:18px 22px;
+    margin:22px 0;
+    border-left:5px solid var(--gold);
+    background:var(--panel);
+  }
+  .box.danger{ border-left-color:var(--soul); background:#1a0d0d; }
+  .box.tip{ border-left-color:#7de08a; background:#0e1712; }
+  .box.note{ border-left-color:var(--water); background:#0d1720; }
+  .box .box-title{
+    font-family:'Press Start 2P'; font-size:0.62rem; letter-spacing:1px;
+    margin-bottom:10px; display:block;
+  }
+  .box.danger .box-title{ color:var(--soul); }
+  .box.tip .box-title{ color:#7de08a; }
+  .box.note .box-title{ color:var(--water); }
+  .box p{ margin:0; color:var(--bone); font-size:0.98rem;}
+
+  .illus{
+    display:flex; flex-direction:column; align-items:center;
+    gap:14px; margin:34px 0;
+  }
+  .illus .caption{
+    font-family:'VT323'; font-size:1.15rem; color:var(--dim); font-style:italic;
+  }
+
+  table.rel{
+    width:100%; border-collapse:collapse; margin:20px 0 10px;
+    font-size:0.92rem;
+  }
+  table.rel th{
+    background:var(--panel-2); color:var(--gold); text-align:left;
+    padding:10px 12px; font-family:'Space Mono'; font-size:0.85rem;
+    border-bottom:2px solid var(--gold);
+  }
+  table.rel td{
+    padding:10px 12px; border-bottom:1px solid rgba(246,243,234,0.1); color:var(--bone);
+  }
+  table.rel tr:nth-child(even) td{ background:rgba(246,243,234,0.03); }
+
+  table.datarow{
+    border-collapse:collapse; margin:18px auto; font-size:0.9rem;
+  }
+  table.datarow th{
+    background:var(--soul); color:#1a0505; padding:8px 14px;
+    font-family:'Space Mono'; font-weight:bold;
+  }
+  table.datarow td{
+    padding:7px 14px; border:1px solid rgba(246,243,234,0.15); color:var(--white);
+    background:#111;
+  }
+
+  .rules-list{ list-style:none; padding:0; margin:20px 0;}
+  .rules-list li{
+    display:grid; grid-template-columns:28px 1fr; gap:12px;
+    padding:12px 0; border-bottom:1px dashed rgba(246,243,234,0.15);
+    font-size:0.95rem; color:var(--bone);
+  }
+  .rules-list .x{ color:var(--soul); font-weight:bold; }
+  .rules-list b{ color:var(--white); }
+
+  .finale{
+    text-align:center; padding:80px 20px 40px;
+  }
+  .finale .display{ color:var(--gold); font-size:1.2rem; line-height:2; }
+  .finale .narration{ display:block; margin-top:20px; }
+
+  ::selection{ background:var(--soul); color:#fff; }
+
+  /* CHECK CARDS */
+  .roster{ margin:34px 0 10px; }
+  .roster-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(220px,1fr));
+    gap:16px;
+    margin-top:18px;
+  }
+  .check-card{
+    background:#000;
+    border:2px solid var(--white);
+    border-radius:6px;
+    padding:16px 18px;
+    position:relative;
+  }
+  .check-card .check-tag{
+    font-family:'Press Start 2P'; font-size:0.55rem; color:var(--dim);
+    letter-spacing:1px; margin-bottom:8px;
+  }
+  .check-card .cc-name{
+    font-family:'Space Mono'; font-weight:bold; font-size:1.05rem;
+    color:var(--gold); margin-bottom:10px;
+  }
+  .check-card .cc-stats{
+    font-family:'VT323'; font-size:1.15rem; color:var(--bone);
+    display:flex; gap:14px; margin-bottom:10px;
+  }
+  .check-card .cc-stats span b{ color:var(--water); }
+  .check-card .cc-flavor{
+    font-family:'VT323'; font-style:italic; color:var(--dim); font-size:1.05rem;
+  }
+  .check-card .cc-flavor::before{ content:"* "; color:var(--soul); font-style:normal; }
+  .check-icon{ margin-bottom:8px; }
+
+  /* MASCOT */
+  .mascot-wrap{
+    display:flex; align-items:center; gap:14px;
+    margin:28px 0; max-width:520px;
+  }
+  .mascot-wrap.oohhh{ margin-top:34px; }
+  .mascot{ width:52px; height:52px; flex-shrink:0; }
+  .mascot-wrap.confused .mascot{ animation: mascot-wobble 2.6s ease-in-out infinite; }
+  .mascot-wrap.oohhh .mascot{ animation: mascot-pop 0.5s ease-out; }
+  @keyframes mascot-wobble{ 0%,100%{ transform:rotate(-4deg); } 50%{ transform:rotate(4deg); } }
+  @keyframes mascot-pop{ 0%{ transform:scale(0.5); } 65%{ transform:scale(1.15); } 100%{ transform:scale(1); } }
+  .mascot-bubble{
+    font-family:'VT323', monospace; font-size:1.3rem; font-style:italic;
+    padding:10px 18px; border-radius:8px; border:2px dashed rgba(89,200,255,0.4);
+    background:rgba(0,0,0,0.35); color:var(--water);
+  }
+  .mascot-wrap.oohhh .mascot-bubble{ border-color:rgba(255,210,63,0.45); color:var(--gold); }
+  .mascot use{ fill:var(--bone); }
+  .mascot-wrap.oohhh .mascot use{ fill:var(--gold); }
+  .mascot-wrap.oops .mascot use{ fill:var(--bone); }
+  .mascot-wrap.crying .mascot use{ fill:#c9c2ad; }
+  .mascot-wrap.oops .mascot{ animation: mascot-wobble 2.2s ease-in-out infinite; }
+  .mascot-wrap.oops .mascot-bubble{ border-color:rgba(89,200,255,0.4); color:var(--water); }
+  .mascot-wrap.crying .mascot{ animation: mascot-shake 0.4s ease-in-out 2; }
+  .mascot-wrap.crying .mascot-bubble{ border-color:rgba(255,45,58,0.45); color:var(--soul); }
+  @keyframes mascot-shake{ 0%,100%{ transform:translateX(0); } 25%{ transform:translateX(-3px); } 75%{ transform:translateX(3px); } }
+</style>
+</head>
+<body>
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <symbol id="mascot-body" viewBox="0 0 16 16">
+        <rect x="6" y="0" width="4" height="1"/>
+        <rect x="5" y="1" width="6" height="1"/>
+        <rect x="4" y="2" width="8" height="1"/>
+        <rect x="3" y="3" width="10" height="1"/>
+        <rect x="3" y="4" width="10" height="1"/>
+        <rect x="2" y="5" width="12" height="1"/>
+        <rect x="2" y="6" width="12" height="1"/>
+        <rect x="2" y="7" width="12" height="1"/>
+        <rect x="2" y="8" width="12" height="1"/>
+        <rect x="2" y="9" width="12" height="1"/>
+        <rect x="3" y="10" width="10" height="1"/>
+        <rect x="3" y="11" width="10" height="1"/>
+        <rect x="3" y="12" width="2" height="1"/>
+        <rect x="11" y="12" width="2" height="1"/>
+      </symbol>
+    </defs>
+  </svg>
+<div class="page">
+
+  <!-- COVER -->
+  <div class="cover">
+    <svg class="soul" viewBox="0 0 24 24" fill="none">
+      <path d="M12 21s-8-5.5-8-12.2C4 4.8 6.6 3 9 3c1.6 0 2.6.9 3 1.8C12.4 3.9 13.4 3 15 3c2.4 0 5 1.8 5 5.8C20 15.5 12 21 12 21z" fill="#ff2d3a"/>
+    </svg>
+    <h1 class="display">SQL</h1>
+    <div class="sub">for those who'd rather be grinding EXP than reading docs</div>
+
+    <div class="achievement">
+      <svg width="46" height="46" viewBox="0 0 24 24" fill="none">
+        <circle cx="12" cy="12" r="11" fill="#161616" stroke="#ffd23f" stroke-width="2"/>
+        <path d="M12 5l1.9 4 4.4.4-3.3 3 1 4.3L12 14.5 8 16.7l1-4.3-3.3-3 4.4-.4L12 5z" fill="#ffd23f"/>
+      </svg>
+      <div>
+        <div class="a-title">ACHIEVEMENT UNLOCKED</div>
+        <div class="a-name">Survived Your First JOIN</div>
+        <div class="a-xp">+1000 EXP &nbsp;•&nbsp; no monsters were harmed</div>
+      </div>
+    </div>
+
+    <div class="save-note narration">A save file that actually makes sense, featuring our monster-town database, the UNDERGROUND.</div>
+  </div>
+
+  <!-- TOC -->
+  <div class="toc">
+    <h2 class="display">Table of Contents</h2>
+    <div class="toc-sub">Twelve chapters. One mountain. Zero resets required.</div>
+    <ul class="toc-list">
+      <li><span class="num">01</span><span class="name">Falling Down</span><span class="desc">The very beginning. One command.</span></li>
+      <li><span class="num">02</span><span class="name">Building Your Party</span><span class="desc">Columns, types, rules, and bonds</span></li>
+      <li><span class="num">03</span><span class="name">Checking Stats</span><span class="desc">SELECT &amp; FROM, the power duo</span></li>
+      <li><span class="num">04</span><span class="name">Random Encounters</span><span class="desc">WHERE, AND, OR, LIKE, NULL...</span></li>
+      <li><span class="num">05</span><span class="name">Sorting the Inventory</span><span class="desc">ORDER BY, LIMIT</span></li>
+      <li><span class="num">06</span><span class="name">LOVE &amp; Numbers</span><span class="desc">COUNT, SUM, GROUP BY, HAVING</span></li>
+      <li><span class="num">07</span><span class="name">Family Ties</span><span class="desc">One-to-many, many-to-many &amp; more</span></li>
+      <li><span class="num">08</span><span class="name">Telling Two Tables Apart</span><span class="desc">Dot notation &amp; aliases, from zero</span></li>
+      <li><span class="num">09</span><span class="name">Joining Forces</span><span class="desc">Two tables become one</span></li>
+      <li><span class="num">10</span><span class="name">Save, Load, Reset</span><span class="desc">INSERT, UPDATE, DELETE</span></li>
+      <li><span class="num">11</span><span class="name">Renovating the Underground</span><span class="desc">ALTER, DROP, INDEX</span></li>
+      <li><span class="num">12</span><span class="name">The Rules of the Timeline</span><span class="desc">Every "you can't do that" in one place</span></li>
+    </ul>
+  </div>
+
+  <!-- CH 1 -->
+  <div class="chapter">
+    <div class="kicker">CHAPTER 1</div>
+    <h2>Falling Down</h2>
+    <p>Picture it: you've just tumbled through a hole in Mt. Ebott into a bed of golden flowers. Before there's a town, a shop, or a single monster to talk to, there has to be an Underground for them to live in. The database IS the mountain. Tables get built inside it later. This chapter is short on purpose: you only do this part once.</p>
+
+    <div class="mascot-wrap confused">
+      <svg class="mascot" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><use href="#mascot-body"/><g fill="#1a1a1a"><rect x="5" y="6" width="2" height="1"/><rect x="9" y="6" width="2" height="1"/><rect x="6" y="9" width="1" height="1"/><rect x="8" y="9" width="1" height="1"/><rect x="7" y="10" width="1" height="1"/><rect x="9" y="10" width="1" height="1"/></g><g fill="var(--water)"><rect x="12" y="1" width="2" height="1"/><rect x="13" y="2" width="1" height="1"/><rect x="12" y="3" width="1" height="1"/><rect x="12" y="5" width="1" height="1"/></g></svg>
+      <div class="mascot-bubble">Great, I fell into a hole and now I have to learn database creation. Perfect Tuesday.</div>
+    </div>
+
+    <div class="step-head">STEP 1: CREATE THE MOUNTAIN</div>
+    <p>One command brings the whole world into existence. You'll run this exactly once, ever, for this save file:</p>
+    <pre><span class="kw">CREATE DATABASE</span> Underground;</pre>
+
+    <div class="box tip">
+      <span class="box-title">☆ SAVE POINT TIP</span>
+      <p>Every SQL statement ends with a semicolon <code class="inline">;</code>, it's the little sparkle that tells the game your turn is over. SQL won't move on until it sees one.</p>
+    </div>
+
+    <div class="illus">
+      <svg width="140" height="170" viewBox="0 0 140 170" fill="none">
+        <ellipse cx="70" cy="150" rx="55" ry="10" fill="#1a1a1a"/>
+        <path d="M20 150 L70 20 L120 150 Z" fill="#161616" stroke="#f6f3ea" stroke-width="2"/>
+        <circle cx="70" cy="60" r="6" fill="#ffd23f">
+          <animate attributeName="opacity" values="0.3;1;0.3" dur="2s" repeatCount="indefinite"/>
+        </circle>
+        <text x="70" y="140" text-anchor="middle" fill="#f6f3ea" font-family="Space Mono" font-size="11">Underground</text>
+      </svg>
+      <div class="caption">CREATE DATABASE, a single flower of light breaks the dark.</div>
+    </div>
+
+    <div class="step-head">STEP 2: WALK INSIDE</div>
+    <p>Creating the mountain doesn't put you inside it. It's like the game booting to a title screen, you still have to press start. That's what <code class="inline">USE</code> does:</p>
+    <pre><span class="kw">USE</span> Underground;</pre>
+    <p>Run this right after creating the database, and again every time you reopen your save. It tells SQL which world all your future commands happen in.</p>
+
+    <div class="box danger">
+      <span class="box-title">💀 GAME OVER</span>
+      <p>Forget <code class="inline">USE</code> and every command after it fails with a confusing error. SQL is standing at the surface going "which fallen human, exactly?"</p>
+    </div>
+    <div class="mascot-wrap oohhh">
+      <svg class="mascot" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><use href="#mascot-body"/><g fill="#1a1a1a"><rect x="4" y="6" width="2" height="2"/><rect x="10" y="6" width="2" height="2"/><rect x="6" y="9" width="3" height="2"/></g><g fill="var(--gold)"><rect x="12" y="0" width="1" height="1"/><rect x="12" y="2" width="1" height="1"/><rect x="11" y="1" width="1" height="1"/><rect x="13" y="1" width="1" height="1"/><rect x="12" y="1" width="1" height="1"/></g></svg>
+      <div class="mascot-bubble">Wait, CREATE DATABASE and USE is the whole intro? I built up way more anxiety than two lines deserved.</div>
+    </div>
+
+  </div>
+
+  <!-- CH 2 -->
+  <div class="chapter">
+    <div class="kicker">CHAPTER 2</div>
+    <h2>Building Your Party</h2>
+    <p>A table is like a party roster, it has named columns and rows of data. You design the columns once upfront, and monsters get added later. Let's build our <code class="inline">monsters</code> table from scratch, one piece at a time.</p>
+
+    <div class="mascot-wrap confused">
+      <svg class="mascot" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><use href="#mascot-body"/><g fill="#1a1a1a"><rect x="5" y="6" width="2" height="1"/><rect x="9" y="6" width="2" height="1"/><rect x="6" y="9" width="1" height="1"/><rect x="8" y="9" width="1" height="1"/><rect x="7" y="10" width="1" height="1"/><rect x="9" y="10" width="1" height="1"/></g><g fill="var(--water)"><rect x="12" y="1" width="2" height="1"/><rect x="13" y="2" width="1" height="1"/><rect x="12" y="3" width="1" height="1"/><rect x="12" y="5" width="1" height="1"/></g></svg>
+      <div class="mascot-bubble">Building a table from scratch? Last time I tried to organize anything I lost three hours to it.</div>
+    </div>
+
+    <div class="step-head">STEP 1: CREATE TABLE</div>
+    <p>Every table starts with <code class="inline">CREATE TABLE</code>. Those two words never change. What changes is the name right after, we're calling ours <code class="inline">monsters</code>, but <code class="inline">party</code> or <code class="inline">residents</code> would work too. No spaces in the name, use underscores. Everything that defines the table lives inside the parentheses:</p>
+    <pre><span class="kw">CREATE TABLE</span> monsters (
+);</pre>
+
+    <div class="step-head">STEP 2: GIVING EVERY ROW A SOUL ID</div>
+    <p>The first thing we add is an <code class="inline">id</code> column. Every table needs one, think of it as a SOUL, unique to that row no matter how similar two monsters look. Three keywords work together:</p>
+    <ul class="rules-list">
+      <li><span class="x">◆</span><span><b>INT</b>, ids are whole numbers, so this is the right type.</span></li>
+      <li><span class="x">◆</span><span><b>PRIMARY KEY</b>, the one column that makes every row unique. A table can only ever have one.</span></li>
+      <li><span class="x">◆</span><span><b>AUTO_INCREMENT</b>, SQL counts up automatically. First monster gets 1, second gets 2. You never type the id yourself.</span></li>
+    </ul>
+    <pre><span class="kw">CREATE TABLE</span> monsters (
+  id <span class="gold">INT PRIMARY KEY AUTO_INCREMENT</span>,
+);</pre>
+
+    <div class="box danger">
+      <span class="box-title">💀 GAME OVER</span>
+      <p>A table can only have ONE <code class="inline">PRIMARY KEY</code>. Ever. Put it on two columns and SQL refuses to spawn the table.</p>
+    </div>
+
+    <div class="step-head">STEP 3: STORING THE NAME WITH VARCHAR</div>
+    <p>Now a column for the monster's name. Names are text, so we use <code class="inline">VARCHAR</code>, it always needs a number in parentheses, the max character count. <code class="inline">VARCHAR(100)</code> means up to 100 characters. We add <code class="inline">NOT NULL</code> too, a nameless monster is bad for morale, so this rule is enforced automatically.</p>
+    <pre><span class="kw">CREATE TABLE</span> monsters (
+  id <span class="gold">INT PRIMARY KEY AUTO_INCREMENT</span>,
+  name <span class="gold">VARCHAR(100) NOT NULL</span>,
+);</pre>
+
+    <div class="step-head">STEP 4: ADDING PHONE NUMBER AND LOCATION</div>
+    <p>Phone number and location are both text too, so both reuse the VARCHAR pattern with different lengths. Neither gets <code class="inline">NOT NULL</code>, because both are optional, some monsters just don't own a phone. With no <code class="inline">NOT NULL</code> and no value given, SQL stores <code class="inline">NULL</code>: the total absence of a value.</p>
+    <pre><span class="kw">CREATE TABLE</span> monsters (
+  id <span class="gold">INT PRIMARY KEY AUTO_INCREMENT</span>,
+  name <span class="gold">VARCHAR(100) NOT NULL</span>,
+  phone_number <span class="gold">VARCHAR(20)</span>,
+  location <span class="gold">VARCHAR(50)</span>
+);</pre>
+
+    <div class="box danger">
+      <span class="box-title">💀 GAME OVER</span>
+      <p>Notice the last column has no trailing comma. Every column except the last needs one, miss it and SQL throws a syntax error.</p>
+    </div>
+
+    <table class="rel">
+      <tr><th>Type</th><th>What it stores</th><th>Example</th></tr>
+      <tr><td>INT</td><td>Whole numbers only.</td><td>1, 42, 99</td></tr>
+      <tr><td>VARCHAR(n)</td><td>Text up to n characters.</td><td>name, location</td></tr>
+      <tr><td>TEXT</td><td>Long text, no length limit.</td><td>battle quotes, flavor text</td></tr>
+      <tr><td>DECIMAL(8,2)</td><td>Numbers with decimal places.</td><td>12.50, 4.00</td></tr>
+      <tr><td>BOOLEAN</td><td>True or false only.</td><td>is_hostile</td></tr>
+      <tr><td>DATE</td><td>A calendar date.</td><td>'2015-09-15'</td></tr>
+      <tr><td>DATETIME</td><td>A date combined with a time.</td><td>'2015-09-15 09:30'</td></tr>
+    </table>
+
+    <div class="box tip">
+      <span class="box-title">☆ SAVE POINT TIP</span>
+      <p>Always use <code class="inline">DECIMAL(8,2)</code> for gold prices, never INT, which would silently drop the spare change.</p>
+    </div>
+
+    <div class="step-head">STEP 5: LINKING TABLES WITH FOREIGN KEY</div>
+    <p>Each shop purchase needs to know which monster made it, so we store that monster's id inside the purchase. That stored id is a foreign key, a column in one table pointing at the primary key of another.</p>
+    <pre><span class="kw">CREATE TABLE</span> shop_purchases (
+  id <span class="gold">INT PRIMARY KEY AUTO_INCREMENT</span>,
+  monster_id <span class="gold">INT REFERENCES</span> monsters(id),
+  item_name <span class="gold">VARCHAR(100) NOT NULL</span>,
+  price_gold <span class="gold">DECIMAL(8,2)</span>,
+  purchase_date <span class="gold">DATE</span>
+);</pre>
+
+    <div class="box danger">
+      <span class="box-title">💀 GAME OVER</span>
+      <p>You can't delete the <code class="inline">monsters</code> table while <code class="inline">shop_purchases</code> still points at it. Always remove the child table before the parent.</p>
+    </div>
+
+    <div class="step-head">STEP 6: ADDING ROWS WITH INSERT INTO</div>
+    <p>Your table exists, but it's empty. <code class="inline">INSERT INTO</code> adds a row, list the columns, then <code class="inline">VALUES</code> with matching data in the same order:</p>
+    <pre><span class="kw">INSERT INTO</span> monsters (name, phone_number, location)
+<span class="kw">VALUES</span> ('Sans', '555-0100', 'Snowdin');
+<span class="kw">INSERT INTO</span> monsters (name, phone_number, location)
+<span class="kw">VALUES</span> ('Undyne', '555-0155', 'Waterfall');</pre>
+
+    <table class="datarow">
+      <tr><th>id</th><th>name</th><th>phone_number</th><th>location</th></tr>
+      <tr><td>1</td><td>Sans</td><td>555-0100</td><td>Snowdin</td></tr>
+      <tr><td>2</td><td>Undyne</td><td>555-0155</td><td>Waterfall</td></tr>
+    </table>
+    <div class="narration" style="text-align:center;">The monsters table, two residents in.</div>
+
+    <div class="box danger">
+      <span class="box-title">💀 GAME OVER</span>
+      <p>The number of columns listed must exactly match the number of values. Any column marked <code class="inline">NOT NULL</code> must be included, or the insert fails.</p>
+    </div>
+    <div class="roster">
+      <div class="step-head">MEET THE PARTY (SAMPLE DATA)</div>
+      <p>Here's the cast we'll keep pulling from for the rest of the guide. No portraits, just the CHECK screen, the way the game itself would show you.</p>
+      <div class="roster-grid">
+
+        <div class="check-card">
+          <svg class="check-icon" width="34" height="34" viewBox="0 0 34 34"><circle cx="17" cy="17" r="15" fill="none" stroke="#f6f3ea" stroke-width="2"/><circle cx="12" cy="15" r="1.6" fill="#f6f3ea"/><circle cx="22" cy="15" r="1.6" fill="#f6f3ea"/><path d="M11 22c2 2 10 2 12 0" stroke="#f6f3ea" stroke-width="1.6" fill="none" stroke-linecap="round"/></svg>
+          <div class="check-tag">CHECK</div>
+          <div class="cc-name">Sans · Snowdin</div>
+          <div class="cc-stats"><span>ATK <b>1</b></span><span>DEF <b>1</b></span></div>
+          <div class="cc-flavor">The easiest boss fight. Somehow.</div>
+        </div>
+
+        <div class="check-card">
+          <svg class="check-icon" width="34" height="34" viewBox="0 0 34 34"><rect x="6" y="15" width="22" height="4" rx="2" fill="#f6f3ea"/><rect x="4" y="14" width="4" height="6" rx="2" fill="#f6f3ea"/><rect x="26" y="14" width="4" height="6" rx="2" fill="#f6f3ea"/></svg>
+          <div class="check-tag">CHECK</div>
+          <div class="cc-name">Papyrus · Snowdin</div>
+          <div class="cc-stats"><span>ATK <b>3</b></span><span>DEF <b>3</b></span></div>
+          <div class="cc-flavor">Wants a cool nickname. Nyeh heh heh.</div>
+        </div>
+
+        <div class="check-card">
+          <svg class="check-icon" width="34" height="34" viewBox="0 0 34 34"><path d="M17 4 L20 16 L30 17 L20 18 L17 30 L14 18 L4 17 L14 16 Z" fill="#59c8ff"/></svg>
+          <div class="check-tag">CHECK</div>
+          <div class="cc-name">Undyne · Waterfall</div>
+          <div class="cc-stats"><span>ATK <b>15</b></span><span>DEF <b>7</b></span></div>
+          <div class="cc-flavor">Ninety-eight percent determination.</div>
+        </div>
+
+        <div class="check-card">
+          <svg class="check-icon" width="34" height="34" viewBox="0 0 34 34"><path d="M12 6h10l-1 8h4l-8 14-1-10h-4z" fill="#7de08a"/></svg>
+          <div class="check-tag">CHECK</div>
+          <div class="cc-name">Alphys · Hotland</div>
+          <div class="cc-stats"><span>ATK <b>4</b></span><span>DEF <b>10</b></span></div>
+          <div class="cc-flavor">Definitely not watching anime right now.</div>
+        </div>
+
+        <div class="check-card">
+          <svg class="check-icon" width="34" height="34" viewBox="0 0 34 34"><path d="M17 5c-6 3-9 8-9 13a9 9 0 0018 0c0-5-3-10-9-13z" fill="none" stroke="#f6f3ea" stroke-width="2"/><circle cx="13" cy="16" r="1.4" fill="#f6f3ea"/><circle cx="21" cy="16" r="1.4" fill="#f6f3ea"/></svg>
+          <div class="check-tag">CHECK</div>
+          <div class="cc-name">Toriel · Ruins</div>
+          <div class="cc-stats"><span>ATK <b>6</b></span><span>DEF <b>6</b></span></div>
+          <div class="cc-flavor">Butterscotch-cinnamon, no exceptions.</div>
+        </div>
+
+        <div class="check-card">
+          <svg class="check-icon" width="34" height="34" viewBox="0 0 34 34"><path d="M17 4 L21 14 L31 17 L21 20 L17 30 L13 20 L3 17 L13 14 Z" fill="#ffd23f"/></svg>
+          <div class="check-tag">CHECK</div>
+          <div class="cc-name">Asgore · New Home</div>
+          <div class="cc-stats"><span>ATK <b>8</b></span><span>DEF <b>8</b></span></div>
+          <div class="cc-flavor">Waters flowers. Hesitates a lot.</div>
+        </div>
+
+      </div>
+
+      <div class="box note">
+        <span class="box-title">❗ YOUR TURN</span>
+        <p>Don't just read the CHECK cards above, build them. Make a <code class="inline">monster_stats</code> table and insert each cast member's ATK/DEF from the cards. Match the <code class="inline">monster_id</code> to the order above (Sans = 1, Papyrus = 2, Undyne = 3, Alphys = 4, Toriel = 5, Asgore = 6).</p>
+      </div>
+      <pre><span class="kw">CREATE TABLE</span> monster_stats (
+  id <span class="gold">INT PRIMARY KEY AUTO_INCREMENT</span>,
+  monster_id <span class="gold">INT REFERENCES</span> monsters(id),
+  atk <span class="gold">INT</span>,
+  def <span class="gold">INT</span>
+);
+
+<span class="kw">INSERT INTO</span> monster_stats (monster_id, atk, def)
+<span class="kw">VALUES</span>
+  (1, 1, 1),   <span class="cm">-- Sans</span>
+  (2, 3, 3),   <span class="cm">-- Papyrus</span>
+  (3, 15, 7),  <span class="cm">-- Undyne</span>
+  (4, 4, 10),  <span class="cm">-- Alphys</span>
+  (5, 6, 6),   <span class="cm">-- Toriel</span>
+  (6, 8, 8);   <span class="cm">-- Asgore</span></pre>
+      <p>Once that table exists, every CHECK card above stops being flavor text, it's a row you can SELECT, WHERE, and JOIN against for the rest of this guide. That's exactly the muscle you're building.</p>
+
+    </div>
+
+    <div class="mascot-wrap oohhh">
+      <svg class="mascot" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><use href="#mascot-body"/><g fill="#1a1a1a"><rect x="4" y="6" width="2" height="2"/><rect x="10" y="6" width="2" height="2"/><rect x="6" y="9" width="3" height="2"/></g><g fill="var(--gold)"><rect x="12" y="0" width="1" height="1"/><rect x="12" y="2" width="1" height="1"/><rect x="11" y="1" width="1" height="1"/><rect x="13" y="1" width="1" height="1"/><rect x="12" y="1" width="1" height="1"/></g></svg>
+      <div class="mascot-bubble">Okay that actually clicked. Columns, a key, some rules. I might be good at this.</div>
+    </div>
+
+  </div>
+
+  <!-- CH 3 -->
+  <div class="chapter">
+    <div class="kicker">CHAPTER 3</div>
+    <h2>Checking Stats</h2>
+    <p>You've got monsters sitting in tables now. Time to actually check them, this is the thing you'll do 10,000 times as a DBA, so don't rush it.</p>
+
+    <div class="mascot-wrap confused">
+      <svg class="mascot" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><use href="#mascot-body"/><g fill="#1a1a1a"><rect x="5" y="6" width="2" height="1"/><rect x="9" y="6" width="2" height="1"/><rect x="6" y="9" width="1" height="1"/><rect x="8" y="9" width="1" height="1"/><rect x="7" y="10" width="1" height="1"/><rect x="9" y="10" width="1" height="1"/></g><g fill="var(--water)"><rect x="12" y="1" width="2" height="1"/><rect x="13" y="2" width="1" height="1"/><rect x="12" y="3" width="1" height="1"/><rect x="12" y="5" width="1" height="1"/></g></svg>
+      <div class="mascot-bubble">SELECT and FROM sound like they're about to fight me.</div>
+    </div>
+
+    <div class="step-head">STEP 1: SELECT + FROM, THE INSEPARABLE DUO</div>
+    <p><code class="inline">SELECT</code> means "show me." <code class="inline">FROM</code> means "from where." They're always together. After SELECT, list the columns you want, separated by commas, in whatever order you want them shown:</p>
+    <pre><span class="kw">SELECT</span> name, location <span class="kw">FROM</span> monsters;
+<span class="cm">-- two columns, in this exact order, from the monsters table</span></pre>
+
+    <div class="illus">
+      <svg width="200" height="70" viewBox="0 0 200 70" fill="none">
+        <rect x="4" y="4" width="192" height="62" rx="6" fill="#111" stroke="#f6f3ea" stroke-width="2"/>
+        <text x="100" y="30" text-anchor="middle" fill="#ffd23f" font-family="Space Mono" font-size="12">CHECK</text>
+        <text x="100" y="50" text-anchor="middle" fill="#f6f3ea" font-family="VT323" font-size="15">Sans · ATK 1, DEF 1</text>
+      </svg>
+      <div class="caption">Just like CHECK in battle, you asked for exactly what you wanted to see.</div>
+    </div>
+
+    <p>Want every column instead of typing them all out? The asterisk <code class="inline">*</code> means "give me all of them":</p>
+    <pre><span class="kw">SELECT</span> * <span class="kw">FROM</span> monsters;</pre>
+
+    <div class="box note">
+      <span class="box-title">❗ HEADS UP</span>
+      <p><code class="inline">SELECT *</code> is great for exploring a table you don't know well. In real scripts, name your columns, if someone adds a column later, * silently grabs that too.</p>
+    </div>
+
+    <div class="step-head">STEP 2: AS, GIVE THINGS A NICKNAME</div>
+    <p><code class="inline">AS</code> renames a column, but only in what you see on screen. The table itself never changes.</p>
+    <pre><span class="kw">SELECT</span> price_gold <span class="kw">AS</span> cost, name <span class="kw">AS</span> buyer
+<span class="kw">FROM</span> shop_purchases;</pre>
+
+    <div class="step-head">STEP 3: DISTINCT, THE DUPLICATE KILLER</div>
+    <p>Want to know which items exist at all, not how many times each sold? <code class="inline">DISTINCT</code> collapses everything down to one copy of each unique value:</p>
+    <pre><span class="kw">SELECT DISTINCT</span> item_name <span class="kw">FROM</span> shop_purchases;
+<span class="cm">-- Nice Cream (once), Spider Cider (once), Bisicle (once)...</span></pre>
+
+    <div class="box danger">
+      <span class="box-title">💀 GAME OVER</span>
+      <p>You cannot use <code class="inline">DISTINCT</code> and <code class="inline">GROUP BY</code> in the same query. Pick one, DISTINCT for unique values, GROUP BY for math per category (Chapter 6).</p>
+    </div>
+    <div class="mascot-wrap oohhh">
+      <svg class="mascot" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><use href="#mascot-body"/><g fill="#1a1a1a"><rect x="4" y="6" width="2" height="2"/><rect x="10" y="6" width="2" height="2"/><rect x="6" y="9" width="3" height="2"/></g><g fill="var(--gold)"><rect x="12" y="0" width="1" height="1"/><rect x="12" y="2" width="1" height="1"/><rect x="11" y="1" width="1" height="1"/><rect x="13" y="1" width="1" height="1"/><rect x="12" y="1" width="1" height="1"/></g></svg>
+      <div class="mascot-bubble">SELECT and FROM are best friends, not rivals. I feel a little silly for stressing.</div>
+    </div>
+
+  </div>
+
+  <!-- CH 4 -->
+  <div class="chapter">
+    <div class="kicker">CHAPTER 4</div>
+    <h2>Random Encounters</h2>
+    <p>SELECT shows you EVERYTHING. WHERE says "yeah, but only the rows that match THIS." It's the most important keyword after SELECT itself.</p>
+
+    <div class="mascot-wrap confused">
+      <svg class="mascot" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><use href="#mascot-body"/><g fill="#1a1a1a"><rect x="5" y="6" width="2" height="1"/><rect x="9" y="6" width="2" height="1"/><rect x="6" y="9" width="1" height="1"/><rect x="8" y="9" width="1" height="1"/><rect x="7" y="10" width="1" height="1"/><rect x="9" y="10" width="1" height="1"/></g><g fill="var(--water)"><rect x="12" y="1" width="2" height="1"/><rect x="13" y="2" width="1" height="1"/><rect x="12" y="3" width="1" height="1"/><rect x="12" y="5" width="1" height="1"/></g></svg>
+      <div class="mascot-bubble">WHERE clauses give me the same energy as random encounters in tall grass. Never know what's coming.</div>
+    </div>
+
+    <div class="step-head">STEP 1: THE BASIC WHERE CLAUSE</div>
+    <p>WHERE goes right after FROM, always. The condition you write gets checked against every row, true, it survives; false, it flees the battle.</p>
+    <pre><span class="kw">SELECT</span> * <span class="kw">FROM</span> shop_purchases
+<span class="kw">WHERE</span> item_name = 'Nice Cream';
+<span class="cm">-- only rows where item_name is exactly 'Nice Cream' survive</span></pre>
+
+    <div class="illus">
+      <svg width="220" height="140" viewBox="0 0 220 140" fill="none">
+        <rect x="10" y="10" width="200" height="120" rx="4" fill="#000" stroke="#f6f3ea" stroke-width="2.5"/>
+        <path d="M110 90s-18-12-18-27c0-8 6-13 13-13 3.6 0 6 2 5 5.6-1-3.6-1.4-5.6 5-5.6 7 0 13 5 13 13 0 15-18 27-18 27z" fill="#ff2d3a"/>
+        <circle cx="55" cy="35" r="4" fill="#59c8ff"/>
+        <circle cx="150" cy="45" r="4" fill="#59c8ff"/>
+        <circle cx="40" cy="95" r="4" fill="#ffd23f" stroke="#ffd23f"/>
+        <circle cx="175" cy="100" r="4" fill="#59c8ff"/>
+        <circle cx="90" cy="30" r="3" fill="#59c8ff"/>
+      </svg>
+      <div class="caption">3 legendary drops found out of 8, WHERE dodges the bullets that don't match.</div>
+    </div>
+
+    <div class="box danger">
+      <span class="box-title">💀 GAME OVER</span>
+      <p>WHERE cannot use COUNT, SUM, AVG, or any math function on a group of rows. That's exactly what HAVING is for (Chapter 6).</p>
+    </div>
+
+    <div class="step-head">STEP 2: COMPARISON OPERATORS</div>
+    <pre><span class="kw">WHERE</span> price_gold = 10   <span class="cm">-- exactly 10</span>
+<span class="kw">WHERE</span> price_gold != 10  <span class="cm">-- anything but 10</span>
+<span class="kw">WHERE</span> price_gold > 10   <span class="cm">-- more than 10</span>
+<span class="kw">WHERE</span> price_gold < 10   <span class="cm">-- less than 10</span>
+<span class="kw">WHERE</span> price_gold >= 10  <span class="cm">-- 10 or more</span>
+<span class="kw">WHERE</span> price_gold <= 10  <span class="cm">-- 10 or less</span></pre>
+    <p>These work on dates too, <code class="inline">WHERE purchase_date > '2015-09-01'</code> is completely valid. SQL knows how to compare dates as "earlier" or "later," not just numbers.</p>
+
+    <div class="step-head">STEP 3: STACKING CONDITIONS WITH AND / OR</div>
+    <pre><span class="cm">-- Only Nice Cream purchases over 10 gold:</span>
+<span class="kw">SELECT</span> * <span class="kw">FROM</span> shop_purchases
+<span class="kw">WHERE</span> item_name = 'Nice Cream'
+<span class="kw">AND</span> price_gold > 10;</pre>
+
+    <div class="box danger">
+      <span class="box-title">💀 GAME OVER</span>
+      <p>Mixing AND and OR? Use parentheses. SQL silently reads AND before OR, without them you get a query that runs fine and quietly returns the wrong monsters.</p>
+    </div>
+
+    <div class="step-head">STEP 4: IN, THE LAZY-BUT-CORRECT WAY TO WRITE ORS</div>
+    <pre><span class="cm">-- instead of:</span>
+<span class="kw">WHERE</span> location = 'Snowdin' <span class="kw">OR</span> location = 'Waterfall' <span class="kw">OR</span> location = 'Hotland'
+<span class="cm">-- just write:</span>
+<span class="kw">WHERE</span> location <span class="kw">IN</span> ('Snowdin', 'Waterfall', 'Hotland')</pre>
+    <p>Flip it with <code class="inline">NOT IN</code> to exclude a list instead: <code class="inline">WHERE location NOT IN ('Snowdin', 'Waterfall')</code> returns every monster outside those two areas.</p>
+
+    <div class="step-head">STEP 5: BETWEEN, CHECKING A RANGE</div>
+    <pre><span class="kw">WHERE</span> price_gold <span class="kw">BETWEEN</span> 8 <span class="kw">AND</span> 60
+<span class="cm">-- same as: WHERE price_gold >= 8 AND price_gold <= 60</span>
+<span class="cm">-- exactly 8 or exactly 60 both count</span></pre>
+
+    <div class="step-head">STEP 6: LIKE, FUZZY TEXT SEARCH</div>
+    <p><code class="inline">%</code> means "anything at all here, including nothing." <code class="inline">_</code> means "exactly one mystery character."</p>
+    <pre><span class="kw">WHERE</span> name <span class="kw">LIKE</span> 'S%'      <span class="cm">-- starts with S</span>
+<span class="kw">WHERE</span> name <span class="kw">LIKE</span> '%e'      <span class="cm">-- ends with e</span>
+<span class="kw">WHERE</span> name <span class="kw">LIKE</span> '%a%'     <span class="cm">-- 'a' appears anywhere in the name</span>
+<span class="kw">WHERE</span> name <span class="kw">LIKE</span> 'S_ns'    <span class="cm">-- S, then one character, then ns, matches 'Sans'</span></pre>
+
+    <div class="box note">
+      <span class="box-title">❗ HEADS UP</span>
+      <p>LIKE is slow on big tables, it checks every row, character by character. Fine for 500 rows. A genuine nightmare for 50 million.</p>
+    </div>
+
+    <div class="step-head">STEP 7: IS NULL, THE SNEAKY ONE</div>
+    <p>NULL means "no value was ever recorded here." Not zero, not an empty string, the total absence of data. You cannot check for it with an equals sign.</p>
+    <pre><span class="kw">WHERE</span> phone_number <span class="kw">IS NULL</span>      <span class="cm">-- no phone on file</span>
+<span class="kw">WHERE</span> phone_number <span class="kw">IS NOT NULL</span>  <span class="cm">-- a number exists</span></pre>
+
+    <div class="box danger">
+      <span class="box-title">💀 GAME OVER</span>
+      <p><code class="inline">WHERE phone_number = NULL</code> will NEVER match anything, ever. No error, it quietly returns 0 rows. NULL means "unknown," and SQL refuses to call an unknown equal to anything. Always use IS NULL / IS NOT NULL.</p>
+    </div>
+    <div class="mascot-wrap oohhh">
+      <svg class="mascot" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><use href="#mascot-body"/><g fill="#1a1a1a"><rect x="4" y="6" width="2" height="2"/><rect x="10" y="6" width="2" height="2"/><rect x="6" y="9" width="3" height="2"/></g><g fill="var(--gold)"><rect x="12" y="0" width="1" height="1"/><rect x="12" y="2" width="1" height="1"/><rect x="11" y="1" width="1" height="1"/><rect x="13" y="1" width="1" height="1"/><rect x="12" y="1" width="1" height="1"/></g></svg>
+      <div class="mascot-bubble">Turns out WHERE is just me picking my battles. I can work with that.</div>
+    </div>
+
+  </div>
+
+  <!-- CH 5 -->
+  <div class="chapter">
+    <div class="kicker">CHAPTER 5</div>
+    <h2>Sorting the Inventory</h2>
+    <p>Now that you can pull exactly the rows you want, let's control the order they come back in, and stop the database from dumping ten thousand items on you at once.</p>
+
+    <div class="mascot-wrap confused">
+      <svg class="mascot" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><use href="#mascot-body"/><g fill="#1a1a1a"><rect x="5" y="6" width="2" height="1"/><rect x="9" y="6" width="2" height="1"/><rect x="6" y="9" width="1" height="1"/><rect x="8" y="9" width="1" height="1"/><rect x="7" y="10" width="1" height="1"/><rect x="9" y="10" width="1" height="1"/></g><g fill="var(--water)"><rect x="12" y="1" width="2" height="1"/><rect x="13" y="2" width="1" height="1"/><rect x="12" y="3" width="1" height="1"/><rect x="12" y="5" width="1" height="1"/></g></svg>
+      <div class="mascot-bubble">My actual inventory has never once been sorted, so this should be interesting.</div>
+    </div>
+
+    <div class="step-head">STEP 1: ORDER BY, SORT YOUR RESULTS</div>
+    <pre><span class="kw">SELECT</span> * <span class="kw">FROM</span> shop_purchases <span class="kw">ORDER BY</span> price_gold <span class="kw">DESC</span>;
+<span class="cm">-- priciest purchase shows up first</span></pre>
+    <pre><span class="kw">ORDER BY</span> location <span class="kw">ASC</span>, name <span class="kw">ASC</span>
+<span class="cm">-- sort by location first, then by name within each location</span></pre>
+
+    <div class="box danger">
+      <span class="box-title">💀 GAME OVER</span>
+      <p>ORDER BY never uses AND. <code class="inline">ORDER BY location AND name</code> looks reasonable but is wrong, use a comma.</p>
+    </div>
+
+    <div class="step-head">STEP 2: LIMIT, STOP THE FLOOD</div>
+    <pre><span class="kw">SELECT</span> * <span class="kw">FROM</span> shop_purchases
+<span class="kw">ORDER BY</span> price_gold <span class="kw">DESC</span>
+<span class="kw">LIMIT</span> 10;
+<span class="cm">-- top 10 most expensive purchases, nothing else</span></pre>
+
+    <div class="illus">
+      <svg width="180" height="110" viewBox="0 0 180 110" fill="none">
+        <rect x="15" y="55" width="40" height="45" fill="#111" stroke="#f6f3ea" stroke-width="2"/>
+        <rect x="70" y="30" width="40" height="70" fill="#111" stroke="#ffd23f" stroke-width="2"/>
+        <rect x="125" y="65" width="40" height="35" fill="#111" stroke="#f6f3ea" stroke-width="2"/>
+        <text x="35" y="80" text-anchor="middle" fill="#f6f3ea" font-family="Space Mono" font-size="12">2</text>
+        <text x="90" y="55" text-anchor="middle" fill="#ffd23f" font-family="Space Mono" font-size="12">1</text>
+        <text x="145" y="88" text-anchor="middle" fill="#f6f3ea" font-family="Space Mono" font-size="12">3</text>
+      </svg>
+      <div class="caption">LIMIT 3, only the podium finishers make the cut.</div>
+    </div>
+
+    <div class="box note">
+      <span class="box-title">❗ HEADS UP</span>
+      <p>LIMIT is the MySQL/PostgreSQL keyword. SQL Server uses TOP, Oracle uses FETCH FIRST. Same move, three different names.</p>
+    </div>
+    <div class="mascot-wrap oohhh">
+      <svg class="mascot" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><use href="#mascot-body"/><g fill="#1a1a1a"><rect x="4" y="6" width="2" height="2"/><rect x="10" y="6" width="2" height="2"/><rect x="6" y="9" width="3" height="2"/></g><g fill="var(--gold)"><rect x="12" y="0" width="1" height="1"/><rect x="12" y="2" width="1" height="1"/><rect x="11" y="1" width="1" height="1"/><rect x="13" y="1" width="1" height="1"/><rect x="12" y="1" width="1" height="1"/></g></svg>
+      <div class="mascot-bubble">ORDER BY and LIMIT together and suddenly I'm the organized one. Who knew.</div>
+    </div>
+
+  </div>
+
+  <!-- CH 6 -->
+  <div class="chapter">
+    <div class="kicker">CHAPTER 6</div>
+    <h2>LOVE &amp; Numbers</h2>
+    <p>SQL can crunch numbers for you instead of you exporting everything to a spreadsheet first. Aggregate functions take a whole bunch of rows and squish them down into a single stat.</p>
+
+    <div class="mascot-wrap confused">
+      <svg class="mascot" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><use href="#mascot-body"/><g fill="#1a1a1a"><rect x="5" y="6" width="2" height="1"/><rect x="9" y="6" width="2" height="1"/><rect x="6" y="9" width="1" height="1"/><rect x="8" y="9" width="1" height="1"/><rect x="7" y="10" width="1" height="1"/><rect x="9" y="10" width="1" height="1"/></g><g fill="var(--water)"><rect x="12" y="1" width="2" height="1"/><rect x="13" y="2" width="1" height="1"/><rect x="12" y="3" width="1" height="1"/><rect x="12" y="5" width="1" height="1"/></g></svg>
+      <div class="mascot-bubble">Math. In my SQL. In this economy.</div>
+    </div>
+
+    <div class="step-head">STEP 1: THE 5 AGGREGATE FUNCTIONS</div>
+    <pre><span class="kw">SELECT</span>
+  <span class="kw">COUNT</span>(*) <span class="kw">AS</span> total_purchases,      <span class="cm">-- every row, including NULLs</span>
+  <span class="kw">COUNT</span>(discount) <span class="kw">AS</span> discounted,   <span class="cm">-- skips NULL values</span>
+  <span class="kw">SUM</span>(price_gold) <span class="kw">AS</span> total_gold,   <span class="cm">-- add them all up</span>
+  <span class="kw">AVG</span>(price_gold) <span class="kw">AS</span> avg_price,    <span class="cm">-- the average</span>
+  <span class="kw">MIN</span>(price_gold) <span class="kw">AS</span> cheapest,     <span class="cm">-- smallest value</span>
+  <span class="kw">MAX</span>(price_gold) <span class="kw">AS</span> priciest      <span class="cm">-- biggest value</span>
+<span class="kw">FROM</span> shop_purchases;</pre>
+    <p>No WHERE clause here, so it's crunching every row in the whole table into one line of results, one total count, one grand total, one average. That's an aggregate's default move: collapse everything to one number, unless told otherwise (which is exactly what GROUP BY does next).</p>
+
+    <div class="box tip">
+      <span class="box-title">☆ SAVE POINT TIP</span>
+      <p><code class="inline">COUNT(*)</code> counts every row. <code class="inline">COUNT(discount)</code> skips NULLs. Out of 100 purchases where 60 got a Tem discount: COUNT(*) = 100, COUNT(discount) = 60.</p>
+    </div>
+
+    <div class="step-head">STEP 2: GROUP BY, MATH PER CATEGORY</div>
+    <pre><span class="kw">SELECT</span> item_name, <span class="kw">COUNT</span>(*) <span class="kw">AS</span> times_bought
+<span class="kw">FROM</span> shop_purchases
+<span class="kw">GROUP BY</span> item_name;
+<span class="cm">-- one row per distinct item, with how many times it sold</span></pre>
+
+    <div class="illus">
+      <svg width="200" height="100" viewBox="0 0 200 100" fill="none">
+        <g fill="#ff2d3a"><rect x="10" y="60" width="12" height="10"/><rect x="10" y="48" width="12" height="10"/><rect x="10" y="36" width="12" height="10"/></g>
+        <g fill="#59c8ff"><rect x="90" y="60" width="12" height="10"/><rect x="90" y="48" width="12" height="10"/></g>
+        <g fill="#ffd23f"><rect x="170" y="60" width="12" height="10"/><rect x="170" y="48" width="12" height="10"/><rect x="170" y="36" width="12" height="10"/><rect x="170" y="24" width="12" height="10"/></g>
+        <text x="16" y="85" text-anchor="middle" fill="#f6f3ea" font-family="VT323" font-size="13">Nice Cream ×3</text>
+        <text x="96" y="85" text-anchor="middle" fill="#f6f3ea" font-family="VT323" font-size="13">Bisicle ×2</text>
+        <text x="176" y="85" text-anchor="middle" fill="#f6f3ea" font-family="VT323" font-size="13">Cider ×4</text>
+      </svg>
+      <div class="caption">GROUP BY sorts the loot into stacks by type.</div>
+    </div>
+
+    <div class="box danger">
+      <span class="box-title">💀 GAME OVER</span>
+      <p>Every column in SELECT that is NOT wrapped in an aggregate function must also appear in GROUP BY.</p>
+    </div>
+
+    <div class="step-head">STEP 3: HAVING, WHERE BUT FOR GROUPS</div>
+    <p>WHERE filters individual rows before grouping. HAVING filters entire groups after grouping.</p>
+    <pre><span class="kw">SELECT</span> item_name, <span class="kw">COUNT</span>(*) <span class="kw">AS</span> times_bought
+<span class="kw">FROM</span> shop_purchases
+<span class="kw">GROUP BY</span> item_name
+<span class="kw">HAVING</span> <span class="kw">COUNT</span>(*) > 5;
+<span class="cm">-- only items bought more than 5 times total</span></pre>
+
+    <div class="box danger">
+      <span class="box-title">💀 GAME OVER</span>
+      <p>HAVING without GROUP BY makes no sense, there are no groups to filter. Not grouping anything? You want WHERE instead.</p>
+    </div>
+    <div class="mascot-wrap oohhh">
+      <svg class="mascot" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><use href="#mascot-body"/><g fill="#1a1a1a"><rect x="4" y="6" width="2" height="2"/><rect x="10" y="6" width="2" height="2"/><rect x="6" y="9" width="3" height="2"/></g><g fill="var(--gold)"><rect x="12" y="0" width="1" height="1"/><rect x="12" y="2" width="1" height="1"/><rect x="11" y="1" width="1" height="1"/><rect x="13" y="1" width="1" height="1"/><rect x="12" y="1" width="1" height="1"/></g></svg>
+      <div class="mascot-bubble">SQL does the math so I don't have to. I've never felt so understood.</div>
+    </div>
+
+  </div>
+
+  <!-- CH 7 -->
+  <div class="chapter">
+    <div class="kicker">CHAPTER 7</div>
+    <h2>Family Ties</h2>
+    <p>Before you JOIN tables, you need to understand HOW they're related. Three types exist, and getting this right saves you a world of pain later.</p>
+
+    <div class="mascot-wrap confused">
+      <svg class="mascot" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><use href="#mascot-body"/><g fill="#1a1a1a"><rect x="5" y="6" width="2" height="1"/><rect x="9" y="6" width="2" height="1"/><rect x="6" y="9" width="1" height="1"/><rect x="8" y="9" width="1" height="1"/><rect x="7" y="10" width="1" height="1"/><rect x="9" y="10" width="1" height="1"/></g><g fill="var(--water)"><rect x="12" y="1" width="2" height="1"/><rect x="13" y="2" width="1" height="1"/><rect x="12" y="3" width="1" height="1"/><rect x="12" y="5" width="1" height="1"/></g></svg>
+      <div class="mascot-bubble">Table relationships sound like a soap opera and I am not emotionally ready.</div>
+    </div>
+
+    <div class="step-head">TYPE 1: ONE-TO-MANY (the most common)</div>
+    <p>One row in Table A links to many rows in Table B. A single monster can make many purchases, but each purchase belongs to exactly one monster. The rule for the foreign key: the "many" side holds it.</p>
+    <div class="illus">
+      <svg width="440" height="180" viewBox="0 0 440 180" fill="none">
+        <!-- monsters table -->
+        <rect x="10" y="30" width="150" height="90" rx="6" fill="#111" stroke="#f6f3ea" stroke-width="2"/>
+        <rect x="10" y="30" width="150" height="26" rx="6" fill="#1f1f1f" stroke="#f6f3ea" stroke-width="2"/>
+        <text x="85" y="47" text-anchor="middle" fill="#ffd23f" font-family="Space Mono" font-size="12">monsters</text>
+        <text x="20" y="76" fill="#f6f3ea" font-family="Space Mono" font-size="11">id  name</text>
+        <text x="20" y="94" fill="#7de08a" font-family="Space Mono" font-size="11">1   Sans</text>
+        <text x="20" y="110" fill="#59c8ff" font-family="Space Mono" font-size="11">2   Undyne</text>
+
+        <!-- shop_purchases table -->
+        <rect x="270" y="14" width="160" height="150" rx="6" fill="#111" stroke="#f6f3ea" stroke-width="2"/>
+        <rect x="270" y="14" width="160" height="26" rx="6" fill="#1f1f1f" stroke="#f6f3ea" stroke-width="2"/>
+        <text x="350" y="31" text-anchor="middle" fill="#ffd23f" font-family="Space Mono" font-size="12">shop_purchases</text>
+        <text x="280" y="60" fill="#f6f3ea" font-family="Space Mono" font-size="10">id  monster_id  item</text>
+        <text x="280" y="78" fill="#7de08a" font-family="Space Mono" font-size="10">1   1           Nice Cream</text>
+        <text x="280" y="96" fill="#7de08a" font-family="Space Mono" font-size="10">2   1           Bisicle</text>
+        <text x="280" y="114" fill="#59c8ff" font-family="Space Mono" font-size="10">3   2           Spider Cider</text>
+
+        <!-- connector lines -->
+        <path d="M160 88 C 210 88, 210 78, 270 62" stroke="#7de08a" stroke-width="1.6" fill="none"/>
+        <path d="M160 92 C 220 92, 220 90, 270 84" stroke="#7de08a" stroke-width="1.6" fill="none"/>
+        <path d="M160 104 C 210 104, 230 106, 270 102" stroke="#59c8ff" stroke-width="1.6" fill="none"/>
+
+        <text x="220" y="150" text-anchor="middle" fill="#8b8a86" font-family="VT323" font-size="14">monster_id in shop_purchases REFERENCES monsters(id)</text>
+      </svg>
+      <div class="caption">One monster, many purchases, the foreign key lives on the "many" side.</div>
+    </div>
+
+    <div class="step-head">TYPE 2: MANY-TO-MANY (needs a bridge table)</div>
+    <p>One monster can belong to many friend groups, and one friend group can have many monsters. Neither side is the clear "one." The fix: a bridge table storing pairs of ids.</p>
+    <pre><span class="kw">CREATE TABLE</span> monster_groups (
+  monster_id <span class="gold">INT REFERENCES</span> monsters(id),
+  group_id <span class="gold">INT REFERENCES</span> groups(id),
+  <span class="kw">PRIMARY KEY</span> (monster_id, group_id)
+);
+<span class="cm">-- a composite primary key: the COMBINATION must be unique</span></pre>
+
+    <div class="step-head">TYPE 3: ONE-TO-ONE (the rare one)</div>
+    <p>Each monster has exactly one stat sheet, and each stat sheet belongs to exactly one monster. The only difference from one-to-many: add <code class="inline">UNIQUE</code> to the foreign key.</p>
+    <pre><span class="kw">CREATE TABLE</span> monster_stats (
+  id <span class="gold">INT PRIMARY KEY AUTO_INCREMENT</span>,
+  monster_id <span class="gold">INT UNIQUE REFERENCES</span> monsters(id),
+  hp <span class="gold">INT DEFAULT</span> 20
+);</pre>
+
+    <table class="rel">
+      <tr><th>Relationship</th><th>Example</th><th>Where's the FK?</th><th>Special constraint</th></tr>
+      <tr><td>One-to-Many</td><td>Monster → Purchases</td><td>"Many" side (purchases)</td><td>None, FKs can repeat</td></tr>
+      <tr><td>Many-to-Many</td><td>Monsters ↔ Groups</td><td>Bridge table</td><td>Composite PRIMARY KEY</td></tr>
+      <tr><td>One-to-One</td><td>Monster → Stat Sheet</td><td>"Child" side</td><td>UNIQUE on the FK</td></tr>
+    </table>
+    <div class="mascot-wrap oohhh">
+      <svg class="mascot" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><use href="#mascot-body"/><g fill="#1a1a1a"><rect x="4" y="6" width="2" height="2"/><rect x="10" y="6" width="2" height="2"/><rect x="6" y="9" width="3" height="2"/></g><g fill="var(--gold)"><rect x="12" y="0" width="1" height="1"/><rect x="12" y="2" width="1" height="1"/><rect x="11" y="1" width="1" height="1"/><rect x="13" y="1" width="1" height="1"/><rect x="12" y="1" width="1" height="1"/></g></svg>
+      <div class="mascot-bubble">One-to-many, many-to-many, one-to-one. Less drama than my actual family, honestly.</div>
+    </div>
+
+  </div>
+
+  <!-- CH 8 -->
+  <div class="chapter">
+    <div class="kicker">CHAPTER 8</div>
+    <h2>Telling Two Tables Apart</h2>
+    <p>Before you combine two tables, there's one small idea that has to click first. Let's slow all the way down and build it from zero, nothing here depends on anything later in the guide.</p>
+
+    <div class="mascot-wrap confused">
+      <svg class="mascot" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><use href="#mascot-body"/><g fill="#1a1a1a"><rect x="5" y="6" width="2" height="1"/><rect x="9" y="6" width="2" height="1"/><rect x="6" y="9" width="1" height="1"/><rect x="8" y="9" width="1" height="1"/><rect x="7" y="10" width="1" height="1"/><rect x="9" y="10" width="1" height="1"/></g><g fill="var(--water)"><rect x="12" y="1" width="2" height="1"/><rect x="13" y="2" width="1" height="1"/><rect x="12" y="3" width="1" height="1"/><rect x="12" y="5" width="1" height="1"/></g></svg>
+      <div class="mascot-bubble">Two tables, both with a column named 'id'. This feels like a trap.</div>
+    </div>
+
+    <div class="step-head">STEP 1: THE PROBLEM</div>
+    <p>Here are our two tables again, written out in full. Look closely, both have a column called <code class="inline">id</code>:</p>
+    <pre><span class="kw">CREATE TABLE</span> monsters (
+  id <span class="gold">INT PRIMARY KEY AUTO_INCREMENT</span>,
+  name <span class="gold">VARCHAR(100) NOT NULL</span>,
+  location <span class="gold">VARCHAR(50)</span>
+);
+
+<span class="kw">CREATE TABLE</span> shop_purchases (
+  id <span class="gold">INT PRIMARY KEY AUTO_INCREMENT</span>,
+  monster_id <span class="gold">INT REFERENCES</span> monsters(id),
+  item_name <span class="gold">VARCHAR(100) NOT NULL</span>,
+  price_gold <span class="gold">DECIMAL(8,2)</span>
+);</pre>
+    <p><code class="inline">monsters</code> has its own <code class="inline">id</code>, one per monster. <code class="inline">shop_purchases</code> has its own <code class="inline">id</code> too, one per purchase. Two completely different columns that just happen to share a name. Now say this query out loud:</p>
+    <pre><span class="kw">SELECT</span> id <span class="kw">FROM</span> monsters, shop_purchases;</pre>
+    <p>Which <code class="inline">id</code> does that mean, the monster's, or the purchase's? SQL can't guess, and it won't try. It needs to be told exactly which table you're pointing at.</p>
+
+    <div class="box danger">
+      <span class="box-title">💀 GAME OVER</span>
+      <p>Run a query with an unclear column name like the one above and SQL stops you cold: <code class="inline">Error: column 'id' is ambiguous</code>. This isn't a rare edge case, it's the very first error most people hit the moment a second table shows up.</p>
+    </div>
+
+    <div class="step-head">STEP 2: THE FIX: table.column</div>
+    <p>The fix is a small naming pattern called dot notation. Write the table name, then a period, then the column name, no spaces:</p>
+    <pre>monsters.id
+shop_purchases.id</pre>
+    <p>Read it left to right like a mailing address: the table name is the building, the dot just means "inside of," and the column name is the door number. Here's the Step 1 query again, this time fully labeled and safe to run:</p>
+    <pre><span class="kw">SELECT</span> monsters.id, monsters.name
+<span class="kw">FROM</span> monsters;</pre>
+    <p>And here's dot notation doing real work, a query that reaches into both tables at once, matching each purchase back to the monster who made it:</p>
+    <pre><span class="kw">SELECT</span> monsters.name, shop_purchases.item_name, shop_purchases.price_gold
+<span class="kw">FROM</span> monsters, shop_purchases
+<span class="kw">WHERE</span> monsters.id = shop_purchases.monster_id;</pre>
+    <p>Every column is labeled with the table it lives in, so there's zero confusion about which <code class="inline">id</code>, which <code class="inline">name</code>, or which <code class="inline">price_gold</code> is meant, even with two tables sitting in the same query.</p>
+
+    <div class="box tip">
+      <span class="box-title">☆ SAVE POINT TIP</span>
+      <p>You only need dot notation once two or more tables show up in the same question. Asking about just monsters? <code class="inline">SELECT id FROM monsters;</code> is completely fine on its own, there's only one table around, so <code class="inline">id</code> was never confusing in the first place.</p>
+    </div>
+
+    <div class="step-head">STEP 3: GIVING A TABLE A NICKNAME (ALIAS)</div>
+    <p>Typing <code class="inline">monsters</code> and <code class="inline">shop_purchases</code> out in full, over and over, gets tiring fast. SQL lets you give a table a short nickname, called an alias, right where you name it in <code class="inline">FROM</code>, using the word <code class="inline">AS</code>:</p>
+    <pre><span class="kw">SELECT</span> m.name, sp.item_name, sp.price_gold
+<span class="kw">FROM</span> monsters <span class="kw">AS</span> m, shop_purchases <span class="kw">AS</span> sp
+<span class="kw">WHERE</span> m.id = sp.monster_id;</pre>
+    <p>That's the exact same query as Step 2, just shorter. <code class="inline">monsters AS m</code> means "call this table <code class="inline">m</code> from here on," so <code class="inline">m.name</code> means exactly what <code class="inline">monsters.name</code> meant before. Same trick on the other table: <code class="inline">shop_purchases AS sp</code> lets you write <code class="inline">sp.item_name</code> instead of spelling the whole name out every time.</p>
+
+    <div class="box note">
+      <span class="box-title">❗ HEADS UP</span>
+      <p><code class="inline">AS</code> is technically optional, <code class="inline">monsters m</code> works exactly like <code class="inline">monsters AS m</code>, but writing <code class="inline">AS</code> explicitly makes the query easier for someone else, including future you, to read at a glance.</p>
+    </div>
+
+    <p>That's the entire idea: give each table a short nickname if you want one, then use <code class="inline">table.column</code> (or <code class="inline">nickname.column</code>) any time you need to say exactly which column, in which table, you mean. Keep it in your back pocket, you'll reach for it constantly starting in the next chapter.</p>
+    <div class="mascot-wrap oohhh">
+      <svg class="mascot" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><use href="#mascot-body"/><g fill="#1a1a1a"><rect x="4" y="6" width="2" height="2"/><rect x="10" y="6" width="2" height="2"/><rect x="6" y="9" width="3" height="2"/></g><g fill="var(--gold)"><rect x="12" y="0" width="1" height="1"/><rect x="12" y="2" width="1" height="1"/><rect x="11" y="1" width="1" height="1"/><rect x="13" y="1" width="1" height="1"/><rect x="12" y="1" width="1" height="1"/></g></svg>
+      <div class="mascot-bubble">monsters.id, shop_purchases.id. Not a trap, just labels. I overreacted.</div>
+    </div>
+
+  </div>
+
+  <!-- CH 9 -->
+  <div class="chapter">
+    <div class="kicker">CHAPTER 9</div>
+    <h2>Joining Forces</h2>
+    <p>Your <code class="inline">monsters</code> table has names. Your <code class="inline">shop_purchases</code> table has what they bought. Neither one alone tells the whole story. A <code class="inline">JOIN</code> glues matching rows from two tables into one combined row, let's build it from real data, one piece at a time.</p>
+
+    <div class="mascot-wrap confused">
+      <svg class="mascot" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><use href="#mascot-body"/><g fill="#1a1a1a"><rect x="5" y="6" width="2" height="1"/><rect x="9" y="6" width="2" height="1"/><rect x="6" y="9" width="1" height="1"/><rect x="8" y="9" width="1" height="1"/><rect x="7" y="10" width="1" height="1"/><rect x="9" y="10" width="1" height="1"/></g><g fill="var(--water)"><rect x="12" y="1" width="2" height="1"/><rect x="13" y="2" width="1" height="1"/><rect x="12" y="3" width="1" height="1"/><rect x="12" y="5" width="1" height="1"/></g></svg>
+      <div class="mascot-bubble">JOIN sounds powerful and a little terrifying, like a fusion attack.</div>
+    </div>
+
+    <div class="step-head">STEP 1: JOIN (INNER JOIN), ONLY MATCHING PAIRS</div>
+    <p>Same two tables from last chapter, now with some purchases in them:</p>
+    <pre><span class="kw">INSERT INTO</span> shop_purchases (monster_id, item_name, price_gold)
+<span class="kw">VALUES</span>
+  (1, 'Nice Cream', 15.00),        <span class="cm">-- Sans</span>
+  (3, 'Spider Cider', 9.50),       <span class="cm">-- Undyne</span>
+  (3, 'Spider Donut', 6.00),       <span class="cm">-- Undyne</span>
+  (5, 'Butterscotch Pie', 22.00);  <span class="cm">-- Toriel</span></pre>
+    <p>Notice Papyrus (2), Alphys (4), and Asgore (6) never show up as a <code class="inline">monster_id</code>, they haven't bought anything. Keep that in mind, it matters in Step 2. A plain <code class="inline">JOIN</code> connects the two tables using <code class="inline">ON</code>, matching wherever <code class="inline">shop_purchases.monster_id</code> equals <code class="inline">monsters.id</code>:</p>
+    <pre><span class="kw">SELECT</span> monsters.name, shop_purchases.item_name, shop_purchases.price_gold
+<span class="kw">FROM</span> monsters
+<span class="kw">JOIN</span> shop_purchases <span class="kw">ON</span> monsters.id = shop_purchases.monster_id;</pre>
+    <p>Run that, and here's exactly what comes back:</p>
+    <table class="datarow">
+      <tr><th>name</th><th>item_name</th><th>price_gold</th></tr>
+      <tr><td>Sans</td><td>Nice Cream</td><td>15.00</td></tr>
+      <tr><td>Undyne</td><td>Spider Cider</td><td>9.50</td></tr>
+      <tr><td>Undyne</td><td>Spider Donut</td><td>6.00</td></tr>
+      <tr><td>Toriel</td><td>Butterscotch Pie</td><td>22.00</td></tr>
+    </table>
+    <div class="narration" style="text-align:center;">Only the monsters who show up in BOTH tables made it in.</div>
+    <p>That's the whole idea of a plain <code class="inline">JOIN</code> (also called <code class="inline">INNER JOIN</code>): it only keeps rows with a match on both sides. Papyrus, Alphys, and Asgore had nothing in <code class="inline">shop_purchases</code>, so they're simply gone from the result, not shown with empty values, just absent entirely.</p>
+
+    <div class="box danger">
+      <span class="box-title">💀 GAME OVER</span>
+      <p>Forget the <code class="inline">ON</code> clause and SQL has no idea how to match the rows, so it pairs EVERY row in one table with EVERY row in the other, a cartesian product. Two tables of 6 and 4 rows would return 24 garbage rows instead of 4. Always include <code class="inline">ON</code>.</p>
+    </div>
+
+    <div class="step-head">STEP 2: LEFT JOIN, KEEP EVERYONE FROM THE LEFT TABLE</div>
+    <p>What if you want every monster to show up, purchases or not? Swap <code class="inline">JOIN</code> for <code class="inline">LEFT JOIN</code>. "Left" means the table named right after <code class="inline">FROM</code>, here, <code class="inline">monsters</code>:</p>
+    <pre><span class="kw">SELECT</span> monsters.name, shop_purchases.item_name
+<span class="kw">FROM</span> monsters
+<span class="kw">LEFT JOIN</span> shop_purchases <span class="kw">ON</span> monsters.id = shop_purchases.monster_id;</pre>
+    <p>Same query, same tables, but a very different result. Every one of the 6 monsters is back, with <code class="inline">NULL</code> standing in wherever there's no matching purchase:</p>
+    <table class="datarow">
+      <tr><th>name</th><th>item_name</th></tr>
+      <tr><td>Sans</td><td>Nice Cream</td></tr>
+      <tr><td>Papyrus</td><td>NULL</td></tr>
+      <tr><td>Undyne</td><td>Spider Cider</td></tr>
+      <tr><td>Undyne</td><td>Spider Donut</td></tr>
+      <tr><td>Alphys</td><td>NULL</td></tr>
+      <tr><td>Toriel</td><td>Butterscotch Pie</td></tr>
+      <tr><td>Asgore</td><td>NULL</td></tr>
+    </table>
+    <div class="narration" style="text-align:center;">Every monster made the list, even the ones who never shopped.</div>
+    <p><code class="inline">LEFT JOIN</code> is the standard move any time the question is really "find the ones missing something", monsters with no purchases, players with no achievements, orders with no reviews. A plain <code class="inline">JOIN</code> would have silently dropped all three of them.</p>
+
+    <div class="box tip">
+      <span class="box-title">☆ SAVE POINT TIP</span>
+      <p>Remember the alias trick from last chapter? This is exactly where it earns its keep. The Step 1 query, written shorter, means the exact same thing:</p>
+    </div>
+    <pre><span class="kw">SELECT</span> m.name, sp.item_name, sp.price_gold
+<span class="kw">FROM</span> monsters <span class="kw">AS</span> m
+<span class="kw">JOIN</span> shop_purchases <span class="kw">AS</span> sp <span class="kw">ON</span> m.id = sp.monster_id;
+<span class="cm">-- 'm' and 'sp' stand in for the full table names, same result as Step 1</span></pre>
+    <div class="mascot-wrap oohhh">
+      <svg class="mascot" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><use href="#mascot-body"/><g fill="#1a1a1a"><rect x="4" y="6" width="2" height="2"/><rect x="10" y="6" width="2" height="2"/><rect x="6" y="9" width="3" height="2"/></g><g fill="var(--gold)"><rect x="12" y="0" width="1" height="1"/><rect x="12" y="2" width="1" height="1"/><rect x="11" y="1" width="1" height="1"/><rect x="13" y="1" width="1" height="1"/><rect x="12" y="1" width="1" height="1"/></g></svg>
+      <div class="mascot-bubble">All that buildup and it's just a handshake between two tables.</div>
+    </div>
+
+  </div>
+
+  <!-- CH 10 -->
+  <div class="chapter">
+    <div class="kicker">CHAPTER 10</div>
+    <h2>Save, Load, Reset</h2>
+    <p>Reading data is cool. Now let's actually mess with it. With great DETERMINATION comes great responsibility, some of these commands change or delete things permanently, with no LOAD button.</p>
+
+    <div class="mascot-wrap confused">
+      <svg class="mascot" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><use href="#mascot-body"/><g fill="#1a1a1a"><rect x="5" y="6" width="2" height="1"/><rect x="9" y="6" width="2" height="1"/><rect x="6" y="9" width="1" height="1"/><rect x="8" y="9" width="1" height="1"/><rect x="7" y="10" width="1" height="1"/><rect x="9" y="10" width="1" height="1"/></g><g fill="var(--water)"><rect x="12" y="1" width="2" height="1"/><rect x="13" y="2" width="1" height="1"/><rect x="12" y="3" width="1" height="1"/><rect x="12" y="5" width="1" height="1"/></g></svg>
+      <div class="mascot-bubble">INSERT, UPDATE, DELETE. Three brand new ways to ruin my own day, apparently.</div>
+    </div>
+
+    <div class="illus">
+      <svg width="260" height="90" viewBox="0 0 260 90" fill="none">
+        <g>
+          <path d="M35 12 L41 28 L58 30 L44 40 L48 57 L35 47 L22 57 L26 40 L12 30 L29 28 Z" fill="none" stroke="#7de08a" stroke-width="2"/>
+          <circle cx="35" cy="35" r="3" fill="#7de08a"/>
+          <text x="35" y="80" text-anchor="middle" fill="#7de08a" font-family="Space Mono" font-size="11">INSERT</text>
+        </g>
+        <g>
+          <path d="M112 20a17 17 0 1 1-14 8" fill="none" stroke="#ffd23f" stroke-width="2.4" stroke-linecap="round"/>
+          <path d="M112 12 L112 22 L102 20" fill="none" stroke="#ffd23f" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+          <text x="112" y="80" text-anchor="middle" fill="#ffd23f" font-family="Space Mono" font-size="11">UPDATE</text>
+        </g>
+        <g>
+          <path d="M180 15 L200 45" stroke="#ff2d3a" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M200 15 L180 45" stroke="#ff2d3a" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="205" cy="20" r="1.6" fill="#ff2d3a" opacity="0.8"/>
+          <circle cx="212" cy="30" r="1.2" fill="#ff2d3a" opacity="0.5"/>
+          <circle cx="175" cy="48" r="1.4" fill="#ff2d3a" opacity="0.6"/>
+          <circle cx="215" cy="42" r="1" fill="#ff2d3a" opacity="0.4"/>
+          <text x="190" y="80" text-anchor="middle" fill="#ff2d3a" font-family="Space Mono" font-size="11">DELETE</text>
+        </g>
+      </svg>
+      <div class="caption">Three ways to change the timeline: manifest it, rewind it, turn it to dust.</div>
+    </div>
+
+    <div class="step-head">STEP 1: INSERT INTO, ADDING A ROW</div>
+    <pre><span class="kw">INSERT INTO</span> monsters (name, phone_number, location)
+<span class="kw">VALUES</span> ('Papyrus', '555-0101', 'Snowdin');
+<span class="cm">-- Auto_increment id? Don't include it. SQL handles it.</span></pre>
+    <pre><span class="kw">INSERT INTO</span> monsters (name, phone_number, location)
+<span class="kw">VALUES</span>
+  ('Alphys', '555-0177', 'Hotland'),
+  ('Asgore', '555-0199', 'New Home'),
+  ('Toriel', '555-0111', 'Ruins');
+<span class="cm">-- three rows, three monsters, one statement</span></pre>
+
+    <div class="box danger">
+      <span class="box-title">💀 GAME OVER</span>
+      <p>Columns and values must match in count, every time. Any column marked NOT NULL must be included with a real value.</p>
+    </div>
+
+    <div class="step-head">STEP 2: UPDATE, CHANGING EXISTING DATA</div>
+    <pre><span class="kw">UPDATE</span> shop_purchases
+<span class="kw">SET</span> price_gold = 14.99
+<span class="kw">WHERE</span> id = 42;
+
+<span class="cm">-- relative to its own current value:</span>
+<span class="kw">UPDATE</span> shop_purchases
+<span class="kw">SET</span> price_gold = price_gold * 1.10
+<span class="kw">WHERE</span> item_name = 'Spider Cider';
+<span class="cm">-- a 10% price bump on every Spider Cider purchase, all at once</span></pre>
+
+    <div class="box danger">
+      <span class="box-title">💀 GAME OVER</span>
+      <p>Forget WHERE on an UPDATE and every row in the entire table gets changed. There's no LOAD button. Always write WHERE.</p>
+    </div>
+
+    <div class="step-head">STEP 3: DELETE, REMOVING ROWS</div>
+    <pre><span class="kw">DELETE FROM</span> shop_purchases
+<span class="kw">WHERE</span> id = 42;
+<span class="cm">-- removes exactly one purchase: the one with id 42</span></pre>
+
+    <div class="mascot-wrap oops">
+      <svg class="mascot" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><use href="#mascot-body"/><g fill="#1a1a1a"><rect x="5" y="6" width="2" height="1"/><rect x="9" y="6" width="2" height="1"/><rect x="6" y="9" width="4" height="1"/></g><g fill="var(--water)"><rect x="12" y="3" width="1" height="1"/><rect x="12" y="4" width="1" height="1"/><rect x="13" y="4" width="1" height="1"/></g></svg>
+      <div class="mascot-bubble">Hehe... I accidentally deleted my shopping list instead of the test data.</div>
+    </div>
+
+    <div class="box danger">
+      <span class="box-title">💀 GAME OVER</span>
+      <p><code class="inline">DELETE FROM shop_purchases;</code> with no WHERE wipes every row in the table. Always double, even triple, check your WHERE clause. This isn't a RESET you can undo.</p>
+    </div>
+    <div class="mascot-wrap oohhh">
+      <svg class="mascot" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><use href="#mascot-body"/><g fill="#1a1a1a"><rect x="4" y="6" width="2" height="2"/><rect x="10" y="6" width="2" height="2"/><rect x="6" y="9" width="3" height="2"/></g><g fill="var(--gold)"><rect x="12" y="0" width="1" height="1"/><rect x="12" y="2" width="1" height="1"/><rect x="11" y="1" width="1" height="1"/><rect x="13" y="1" width="1" height="1"/><rect x="12" y="1" width="1" height="1"/></g></svg>
+      <div class="mascot-bubble">Nothing caught fire. I'm calling today a win.</div>
+    </div>
+
+  </div>
+
+  <!-- CH 11 -->
+  <div class="chapter">
+    <div class="kicker">CHAPTER 11</div>
+    <h2>Renovating the Underground</h2>
+    <p>You made a table and realized you forgot a column. Or the name's wrong. Or requirements changed and the whole thing needs to go. No need to start a new file from scratch.</p>
+
+    <div class="mascot-wrap confused">
+      <svg class="mascot" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><use href="#mascot-body"/><g fill="#1a1a1a"><rect x="5" y="6" width="2" height="1"/><rect x="9" y="6" width="2" height="1"/><rect x="6" y="9" width="1" height="1"/><rect x="8" y="9" width="1" height="1"/><rect x="7" y="10" width="1" height="1"/><rect x="9" y="10" width="1" height="1"/></g><g fill="var(--water)"><rect x="12" y="1" width="2" height="1"/><rect x="13" y="2" width="1" height="1"/><rect x="12" y="3" width="1" height="1"/><rect x="12" y="5" width="1" height="1"/></g></svg>
+      <div class="mascot-bubble">Renovating a table while it's full of data? What could possibly go wrong.</div>
+    </div>
+
+    <div class="step-head">STEP 1: ALTER TABLE</div>
+    <pre><span class="cm">-- Add a new column:</span>
+<span class="kw">ALTER TABLE</span> shop_purchases <span class="kw">ADD</span> discount <span class="gold">DECIMAL(5,2)</span>;
+
+<span class="cm">-- Remove a column (and all its data):</span>
+<span class="kw">ALTER TABLE</span> shop_purchases <span class="kw">DROP COLUMN</span> discount;
+
+<span class="cm">-- Rename a column:</span>
+<span class="kw">ALTER TABLE</span> shop_purchases <span class="kw">RENAME COLUMN</span> discount <span class="kw">TO</span> discount_amount;
+
+<span class="cm">-- Change a column's type:</span>
+<span class="kw">ALTER TABLE</span> shop_purchases <span class="kw">MODIFY COLUMN</span> price_gold <span class="gold">DECIMAL(10,2)</span>;</pre>
+    <p>When you ADD a column, every existing row gets it too, there's no adding a column to "just the new rows." Existing rows get NULL there unless you specify a DEFAULT.</p>
+
+    <div class="mascot-wrap oops">
+      <svg class="mascot" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><use href="#mascot-body"/><g fill="#1a1a1a"><rect x="5" y="6" width="2" height="1"/><rect x="9" y="6" width="2" height="1"/><rect x="6" y="9" width="4" height="1"/></g><g fill="var(--water)"><rect x="12" y="3" width="1" height="1"/><rect x="12" y="4" width="1" height="1"/><rect x="13" y="4" width="1" height="1"/></g></svg>
+      <div class="mascot-bubble">Thank Asgore ALTER TABLE exists. I already messed up the column name and the boss was going to kill me.</div>
+    </div>
+
+    <div class="box note">
+      <span class="box-title">❗ HEADS UP</span>
+      <p>Dropping a column deletes all the data inside it, for every row, permanently. Check twice, drop once.</p>
+    </div>
+
+    <div class="step-head">STEP 2: DROP TABLE</div>
+    <pre><span class="kw">DROP TABLE</span> shop_purchases;
+
+<span class="cm">-- Safer: won't crash if the table doesn't exist</span>
+<span class="kw">DROP TABLE IF EXISTS</span> shop_purchases;</pre>
+
+    <div class="mascot-wrap crying">
+      <svg class="mascot" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><use href="#mascot-body"/><g fill="#1a1a1a"><rect x="4" y="5" width="2" height="1"/><rect x="10" y="5" width="2" height="1"/><rect x="5" y="6" width="2" height="1"/><rect x="9" y="6" width="2" height="1"/><rect x="6" y="10" width="1" height="1"/><rect x="7" y="9" width="2" height="1"/><rect x="9" y="10" width="1" height="1"/></g><g fill="var(--water)"><rect x="5" y="7" width="1" height="4"/><rect x="10" y="7" width="1" height="4"/></g></svg>
+      <div class="mascot-bubble">My boss is going to kill me... I dropped the WHOLE database, not just the table.</div>
+    </div>
+
+    <div class="box danger">
+      <span class="box-title">💀 GAME OVER</span>
+      <p>You can't drop monsters while shop_purchases still points at it. Always go child table, then parent table.</p>
+    </div>
+
+    <div class="step-head">STEP 3: INDEX, THE PERFORMANCE SECRET WEAPON</div>
+    <p>An index is like a shortcut through Waterfall instead of the long way around. Without one, SQL has to check every single row to find what you're looking for.</p>
+    <pre><span class="kw">CREATE INDEX</span> idx_monster_id <span class="kw">ON</span> shop_purchases(monster_id);
+<span class="cm">-- speeds up any query that filters or joins on monster_id</span></pre>
+
+    <div class="box tip">
+      <span class="box-title">☆ SAVE POINT TIP</span>
+      <p>Index columns you frequently filter on (WHERE), join on (ON), or sort by (ORDER BY). Don't index everything just in case.</p>
+    </div>
+    <div class="mascot-wrap oohhh">
+      <svg class="mascot" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><use href="#mascot-body"/><g fill="#1a1a1a"><rect x="4" y="6" width="2" height="2"/><rect x="10" y="6" width="2" height="2"/><rect x="6" y="9" width="3" height="2"/></g><g fill="var(--gold)"><rect x="12" y="0" width="1" height="1"/><rect x="12" y="2" width="1" height="1"/><rect x="11" y="1" width="1" height="1"/><rect x="13" y="1" width="1" height="1"/><rect x="12" y="1" width="1" height="1"/></g></svg>
+      <div class="mascot-bubble">Still standing, table's fixed, nobody panicked. Mostly.</div>
+    </div>
+
+  </div>
+
+  <!-- CH 12 -->
+  <div class="chapter">
+    <div class="kicker">CHAPTER 12</div>
+    <h2>The Rules of the Timeline</h2>
+    <p>SQL is picky about order. Every clause has a fixed spot in the sentence and genuinely cannot move. Memorize the order below and roughly half of your beginner errors just disappear.</p>
+
+    <div class="mascot-wrap confused">
+      <svg class="mascot" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><use href="#mascot-body"/><g fill="#1a1a1a"><rect x="5" y="6" width="2" height="1"/><rect x="9" y="6" width="2" height="1"/><rect x="6" y="9" width="1" height="1"/><rect x="8" y="9" width="1" height="1"/><rect x="7" y="10" width="1" height="1"/><rect x="9" y="10" width="1" height="1"/></g><g fill="var(--water)"><rect x="12" y="1" width="2" height="1"/><rect x="13" y="2" width="1" height="1"/><rect x="12" y="3" width="1" height="1"/><rect x="12" y="5" width="1" height="1"/></g></svg>
+      <div class="mascot-bubble">Eight clauses, one fixed order, and zero patience left to memorize anything else today.</div>
+    </div>
+
+    <div class="step-head">STEP 1: THE CLAUSE ORDER, FIXED, PERMANENT</div>
+    <pre><span class="kw">SELECT</span>    <span class="cm">-- 1. what columns to show</span>
+<span class="kw">FROM</span>      <span class="cm">-- 2. which table</span>
+<span class="kw">JOIN</span>      <span class="cm">-- 3. link another table (optional)</span>
+<span class="kw">WHERE</span>     <span class="cm">-- 4. filter ROWS (before grouping)</span>
+<span class="kw">GROUP BY</span> <span class="cm">-- 5. group them</span>
+<span class="kw">HAVING</span>   <span class="cm">-- 6. filter GROUPS (after grouping)</span>
+<span class="kw">ORDER BY</span> <span class="cm">-- 7. sort the results</span>
+<span class="kw">LIMIT</span>    <span class="cm">-- 8. cut it to N rows</span></pre>
+
+    <div class="box tip">
+      <span class="box-title">☆ SAVE POINT TIP</span>
+      <p>You don't need all 8 every single time, most everyday queries only use 2 or 3 of these.</p>
+    </div>
+
+    <div class="step-head">STEP 2: THE FULL EXAMPLE, ALL 8 CLAUSES AT ONCE</div>
+    <p>"Show me the top 10 most-purchased items by Snowdin monsters, but only ones bought more than 5 times." Read top to bottom and it's just every chapter of this guide, stacked in the one order SQL demands:</p>
+    <pre><span class="kw">SELECT</span> sp.item_name, <span class="kw">COUNT</span>(*) <span class="kw">AS</span> cnt
+<span class="kw">FROM</span> shop_purchases sp
+<span class="kw">JOIN</span> monsters m <span class="kw">ON</span> sp.monster_id = m.id
+<span class="kw">WHERE</span> m.location = 'Snowdin'
+<span class="kw">GROUP BY</span> sp.item_name
+<span class="kw">HAVING</span> <span class="kw">COUNT</span>(*) > 5
+<span class="kw">ORDER BY</span> cnt <span class="kw">DESC</span>
+<span class="kw">LIMIT</span> 10;</pre>
+
+    <div class="step-head">STEP 3: EVERY "YOU CANNOT DO THAT," ALL IN ONE LIST</div>
+    <ul class="rules-list">
+      <li><span class="x">✕</span><span><b>WHERE COUNT(*) > 5</b>, WHERE runs before groups exist. Use HAVING.</span></li>
+      <li><span class="x">✕</span><span><b>DISTINCT + GROUP BY together</b>, both collapse duplicates differently. Pick one.</span></li>
+      <li><span class="x">✕</span><span><b>ORDER BY location AND name</b>, ORDER BY uses commas, not AND.</span></li>
+      <li><span class="x">✕</span><span><b>A SELECT column missing from GROUP BY</b>, every non-aggregated SELECT column must also appear in GROUP BY.</span></li>
+      <li><span class="x">✕</span><span><b>WHERE discount = NULL</b>, = NULL never matches anything. Always use IS NULL.</span></li>
+      <li><span class="x">✕</span><span><b>JOIN without ON</b>, you get a cartesian product, useless garbage.</span></li>
+      <li><span class="x">✕</span><span><b>DROP monsters while shop_purchases references it</b>, drop the child table first, then the parent.</span></li>
+      <li><span class="x">✕</span><span><b>Two PRIMARY KEYs in one table</b>, one table, one PRIMARY KEY, period.</span></li>
+      <li><span class="x">✕</span><span><b>INSERT with mismatched column/value count</b>, 3 columns listed = 3 values required, every time.</span></li>
+      <li><span class="x">✕</span><span><b>HAVING without GROUP BY</b>, makes no sense without groups. Use WHERE instead.</span></li>
+    </ul>
+    <div class="mascot-wrap oohhh">
+      <svg class="mascot" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" shape-rendering="crispEdges"><use href="#mascot-body"/><g fill="#1a1a1a"><rect x="4" y="6" width="2" height="2"/><rect x="10" y="6" width="2" height="2"/><rect x="6" y="9" width="3" height="2"/></g><g fill="var(--gold)"><rect x="12" y="0" width="1" height="1"/><rect x="12" y="2" width="1" height="1"/><rect x="11" y="1" width="1" height="1"/><rect x="13" y="1" width="1" height="1"/><rect x="12" y="1" width="1" height="1"/></g></svg>
+      <div class="mascot-bubble">SELECT, FROM, JOIN, WHERE, GROUP BY, HAVING, ORDER BY, LIMIT. Same order forever. My brain can finally rest.</div>
+    </div>
+
+  </div>
+
+  <div class="finale">
+    <div class="display">YOU LEARNED ALL OF<br>SQL'S CORE SYNTAX.</div>
+    <span class="narration">Now go open a database and break something on purpose. That's how you actually learn it. Stay determined.</span>
+  </div>
+
+</div>
+</body>
+</html>
