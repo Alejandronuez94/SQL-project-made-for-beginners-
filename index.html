@@ -501,7 +501,7 @@ That stored ID is called a foreign key. A foreign key is a column in one table t
 
     <div class="step-head">STEP 6: ADDING ROWS WITH INSERT INTO</div>
 <p>Your table exists, but it's empty. <code class="inline">INSERT INTO</code> is used to add a new row of data.</p>
-<p>Inside the parentheses after <code class="inline">INSERT INTO(,  ,   ,)</code>, you write the names you attached to int, varchar, etc., etc. Think of it as telling SQL, "Hey! These are the columns I'm about to fill."</p>
+<p>Inside the parentheses after <code class="inline">INSERT INTO(,  ,   ,)</code>, you write the names you attached to int, varchar, etc., etc(example Sans(your int) or banana(your Varchar)). Think of it as telling SQL, "Hey! These are the columns I'm about to fill." After this, you always write the name of the table you wish to insert this information into, so it should be like<code class="inline">INSERT INTO monsters(name, phone_number, location)</code> </p>
 <p>Next comes <code class="inline">VALUES</code>. Inside its parentheses, you write the actual data you want to add. The values must be in the <strong>same order</strong> as the columns you listed above. If the order doesn't match, the wrong data could end up in the wrong columns.</p>
 ```
 
