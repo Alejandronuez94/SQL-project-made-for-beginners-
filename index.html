@@ -484,7 +484,7 @@
     </div>
 
     <div class="step-head">STEP 5: LINKING TABLES WITH FOREIGN KEY</div>
-    <p>Each shop purchase needs to know which monster made it, so we store that monster's id inside the purchase. That stored id is a foreign key, a column in one table pointing at the primary key of another.</p>
+    <p>Each shop purchase needs to know which monster made it, so we store that monster's id inside the purchase. REFERENCES is whats new here and you can see we are using the other table monsters(id). (ID) which is inside the parenthesis is the id of the table we just made(if you don't know lol). That stored ID is a foreign key, a column in one table pointing at the primary key of another. It connects it together</p>
     <pre><span class="kw">CREATE TABLE</span> shop_purchases (
   id <span class="gold">INT PRIMARY KEY AUTO_INCREMENT</span>,
   monster_id <span class="gold">INT REFERENCES</span> monsters(id),
