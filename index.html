@@ -500,7 +500,11 @@ That stored ID is called a foreign key. A foreign key is a column in one table t
     </div>
 
     <div class="step-head">STEP 6: ADDING ROWS WITH INSERT INTO</div>
-    <p>Your table exists, but it's empty. <code class="inline">INSERT INTO</code> adds a row, list the columns, then <code class="inline">VALUES</code> with matching data in the same order:</p>
+<p>Your table exists, but it's empty. <code class="inline">INSERT INTO</code> is used to add a new row of data.</p>
+<p>Inside the parentheses after <code class="inline">INSERT INTO</code>, you list the columns you want to put data into. Think of it as telling SQL, "Hey! These are the columns I'm about to fill."</p>
+<p>Next comes <code class="inline">VALUES</code>. Inside its parentheses, you write the actual data you want to add. The values must be in the <strong>same order</strong> as the columns you listed above. If the order doesn't match, the wrong data could end up in the wrong columns.</p>
+```
+
     <pre><span class="kw">INSERT INTO</span> monsters (name, phone_number, location)
 <span class="kw">VALUES</span> ('Sans', '555-0100', 'Snowdin');
 <span class="kw">INSERT INTO</span> monsters (name, phone_number, location)
